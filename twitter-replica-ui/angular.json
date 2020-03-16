@@ -82,8 +82,8 @@
           "options": {
             "main": "apps/twitter-replica/src/test.ts",
             "polyfills": "apps/twitter-replica/src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
+            "tsConfig": "apps/twitter-replica/tsconfig.spec.json",
+            "karmaConfig": "apps/twitter-replica/karma.conf.js",
             "assets": [
               "apps/twitter-replica/src/favicon.ico",
               "apps/twitter-replica/src/assets"
@@ -116,6 +116,32 @@
             "production": {
               "devServerTarget": "twitter-replica:serve:production"
             }
+          }
+        }
+      }
+    },
+    "twitter-post": {
+      "root": "libs/twitter-post",
+      "sourceRoot": "libs/twitter-post/src",
+      "projectType": "library",
+      "prefix": "twitter",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/twitter-post/src/test-setup.ts",
+            "tsConfig": "libs/twitter-post/tsconfig.spec.json",
+            "karmaConfig": "libs/twitter-post/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/twitter-post/tsconfig.lib.json",
+              "libs/twitter-post/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
