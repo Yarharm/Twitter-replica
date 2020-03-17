@@ -120,6 +120,32 @@
         }
       }
     },
+    "twitter-core": {
+      "root": "libs/twitter-core",
+      "sourceRoot": "libs/twitter-core/src",
+      "projectType": "library",
+      "prefix": "twitter",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/twitter-core/src/test-setup.ts",
+            "tsConfig": "libs/twitter-core/tsconfig.spec.json",
+            "karmaConfig": "libs/twitter-core/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/twitter-core/tsconfig.lib.json",
+              "libs/twitter-core/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
     "twitter-post": {
       "root": "libs/twitter-post",
       "sourceRoot": "libs/twitter-post/src",
