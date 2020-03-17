@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Custom modules
+import { TwitterCoreModule } from '@twitter-replica/core';
 import { TwitterPostModule } from '@twitter-replica/post';
 
 @NgModule({
@@ -13,6 +14,7 @@ import { TwitterPostModule } from '@twitter-replica/post';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    TwitterCoreModule,
     TwitterPostModule
   ],
   providers: [],
