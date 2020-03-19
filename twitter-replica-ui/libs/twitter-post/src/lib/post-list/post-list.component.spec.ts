@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TwitterPostCreateComponent } from './post-create.component';
+import { TwitterPostListComponent } from './post-list.component';
 
-describe('TwitterPostCreateComponent', () => {
-  let component: TwitterPostCreateComponent;
-  let fixture: ComponentFixture<TwitterPostCreateComponent>;
+describe('TwitterPostListComponent', () => {
+  let component: TwitterPostListComponent;
+  let fixture: ComponentFixture<TwitterPostListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TwitterPostCreateComponent]
+      declarations: [TwitterPostListComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TwitterPostCreateComponent);
+    fixture = TestBed.createComponent(TwitterPostListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
