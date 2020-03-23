@@ -13,6 +13,7 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
   private postsSubsciption: Subscription;
 
   ngOnInit(): void {
+    this.postService.getPosts();
     this.postsSubsciption = this.postService.getPostUpdateListener().subscribe(
       (receivedPosts: PostModel[]) => (this.posts = receivedPosts),
       () => throwError(new Error('Could not fetch created posts!'))
