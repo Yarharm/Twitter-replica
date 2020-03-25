@@ -1,0 +1,22 @@
+{
+  "name": "twitter-replica",
+  "version": "1.0.0",
+  "description": "Entry point for backend and frontend",
+  "scripts": {
+    "start": "npm run dev --prefix ./twitter-replica-backend & npm run start --prefix ./twitter-replica-ui",
+    "postinstall": "node ./tools/checkForDependencies"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yarharm/Twitter-replica.git"
+  },
+  "author": "Yaroslav Harmatyuk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yarharm/Twitter-replica/issues"
+  },
+  "homepage": "https://github.com/Yarharm/Twitter-replica#readme",
+  "dependencies": {
+    "concurrently": "^5.1.0"
+  }
+}
