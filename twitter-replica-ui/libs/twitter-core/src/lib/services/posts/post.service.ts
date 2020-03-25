@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
-import { PostModel } from 'libs/twitter-core/src';
-import { cloneDeep } from 'lodash';
 import { Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { PostModel, PostBackendResponse } from 'libs/twitter-core/src';
+import { URL } from 'libs/twitter-core/src/lib/services/urls';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
+  constructor(private readonly httpClient: HttpClient) {}
+
   private posts: PostModel[] = [];
   private postsUpdated = new Subject<PostModel[]>();
 
@@ -15,15 +18,33 @@ export class PostService {
   }
 
   addPost(title: string, description: string, content: string) {
-    this.posts.push(this.buildNewPost(title, description, content));
-    this.postsUpdated.next([...this.posts]);
+    const post: PostModel = this.buildNewPost(
+      null,
+      title,
+      description,
+      content
+    );
+    this.httpClient.post(URL.CREATE_POST, post).subscribe(() => {
+      this.posts.push(post);
+      this.postsUpdated.next([...this.posts]);
+    });
   }
 
   getPosts() {
-    return cloneDeep(this.posts);
+    this.httpClient
+      .get<PostBackendResponse>(URL.GET_POSTS)
+      .subscribe(postData => {
+        this.posts = postData.posts;
+        this.postsUpdated.next([...this.posts]);
+      });
   }
 
-  private buildNewPost(title: string, description: string, content: string) {
-    return { title, description, content };
+  private buildNewPost(
+    id: number,
+    title: string,
+    description: string,
+    content: string
+  ) {
+    return { id, title, description, content };
   }
 }
