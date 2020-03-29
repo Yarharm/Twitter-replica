@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { PostModel, PostBackendResponse } from 'libs/twitter-core/src';
 import { URL } from 'libs/twitter-core/src/lib/services/urls';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -24,19 +25,35 @@ export class PostService {
       description,
       content
     );
-    this.httpClient.post(URL.CREATE_POST, post).subscribe(() => {
-      this.posts.push(post);
-      this.postsUpdated.next([...this.posts]);
-    });
+    this.httpClient
+      .post(URL.CREATE_POST, post)
+      .pipe()
+      .subscribe(() => {
+        this.posts.push(post);
+        this.postsUpdated.next([...this.posts]);
+      });
   }
 
   getPosts() {
     this.httpClient
       .get<PostBackendResponse>(URL.GET_POSTS)
-      .subscribe(postData => {
-        this.posts = postData.posts;
+      .pipe(
+        map((postData: PostBackendResponse) => {
+          return postData.posts.map(post => {
+            return {
+              id: post._id,
+              title: post.title,
+              description: post.description,
+              content: post.content
+            };
+          });
+        })
+      )
+      .subscribe(transformedPosts => {
+        this.posts = transformedPosts;
         this.postsUpdated.next([...this.posts]);
       });
+    console.log('fmoeofpwopfw', this.posts);
   }
 
   private buildNewPost(
