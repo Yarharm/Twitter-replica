@@ -99,9 +99,9 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
+              "apps/twitter-replica/tsconfig.app.json",
+              "apps/twitter-replica/tsconfig.spec.json",
+              "apps/twitter-replica-e2e/tsconfig.json"
             ],
             "exclude": ["**/node_modules/**"]
           }

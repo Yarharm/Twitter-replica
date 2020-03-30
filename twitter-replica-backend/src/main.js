@@ -1,11 +1,13 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const mongoConfig = require("./config/databaseConfig");
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const mongoConfig = require('./config/databaseConfig');
+require('./models/post.model');
+const routes = require('./routes');
 
 async function bootstrap() {
-  var isProduction = process.env.NODE_ENV === "production";
+  const isProduction = process.env.NODE_ENV === 'production';
 
   const app = express();
   const port = process.env.port || 3333;
@@ -18,21 +20,18 @@ async function bootstrap() {
   } else {
     try {
       await mongoose.connect(process.env.MONGODB_LOCAL, mongoConfig);
-      mongoose.set("debug", true);
-      console.log("Connected to DB");
+      mongoose.set('debug', true);
+      console.log('Connected to DB');
     } catch (err) {
-      console.error("Connection to DB failed!");
+      console.error('Connection to DB failed!');
     }
   }
 
-  // Inject mongoose schemas
-  require("./models/post.model");
-
   // Inject routes
-  app.use(require("./routes"));
+  app.use(routes);
 
   // Start development server
-  app.listen(port, () => console.log("Listening on http://localhost:" + port));
+  app.listen(port, () => console.log(`Listening on http://localhost:${port}`));
 }
 
 bootstrap();

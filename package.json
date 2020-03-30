@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "Entry point for backend and frontend",
   "scripts": {
-    "start": "npm run dev --prefix ./twitter-replica-backend & npm run start --prefix ./twitter-replica-ui",
+    "start": "npm run start:backend & npm run start:frontend",
+    "start:app:dev": "npm run start:app:dev --prefix ./twitter-replica-backend & npm run start:frontend",
+    "start:backend": "npm run start --prefix ./twitter-replica-backend",
+    "start:frontend": "npm run start --prefix ./twitter-replica-ui",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "npm run lint --prefix ./twitter-replica-backend",
+    "lint:frontend": "npm run lint --prefix ./twitter-replica-ui",
     "postinstall": "node ./tools/checkForDependencies"
   },
   "repository": {
