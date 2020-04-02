@@ -20,6 +20,10 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
     );
   }
 
+  deletePost(postId: string) {
+    this.postService.deletePost(postId);
+  }
+
   ngOnDestroy(): void {
     this.postsSubsciption.unsubscribe();
   }

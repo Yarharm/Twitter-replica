@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { PostModel, PostBackendResponse } from 'libs/twitter-core/src';
+import {
+  PostModel,
+  BackendPostModel,
+  BackendPostsModel
+} from 'libs/twitter-core/src';
 import { URL } from 'libs/twitter-core/src/lib/services/urls';
 import { map } from 'rxjs/operators';
 
@@ -11,7 +15,7 @@ import { map } from 'rxjs/operators';
 export class PostService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  private posts: PostModel[] = [];
+  private posts: Map<string, PostModel> = new Map();
   private postsUpdated = new Subject<PostModel[]>();
 
   getPostUpdateListener() {
@@ -26,19 +30,19 @@ export class PostService {
       content
     );
     this.httpClient
-      .post(URL.CREATE_POST, post)
-      .pipe()
-      .subscribe(() => {
-        this.posts.push(post);
-        this.postsUpdated.next([...this.posts]);
+      .post<BackendPostModel>(URL.CREATE_POST, post)
+      .subscribe((postData: BackendPostModel) => {
+        post.id = postData._id;
+        this.posts.set(post.id, post);
+        this.postsUpdated.next(Array.from(this.posts.values()));
       });
   }
 
   getPosts() {
     this.httpClient
-      .get<PostBackendResponse>(URL.GET_POSTS)
+      .get<BackendPostsModel>(URL.GET_POSTS)
       .pipe(
-        map((postData: PostBackendResponse) => {
+        map((postData: BackendPostsModel) => {
           return postData.posts.map(post => {
             return {
               id: post._id,
@@ -49,15 +53,25 @@ export class PostService {
           });
         })
       )
-      .subscribe(transformedPosts => {
-        this.posts = transformedPosts;
-        this.postsUpdated.next([...this.posts]);
+      .subscribe((transformedPosts: PostModel[]) => {
+        this.posts = transformedPosts.reduce(
+          (postMap: Map<string, PostModel>, transformPost: PostModel) =>
+            postMap.set(transformPost.id, transformPost),
+          new Map()
+        );
+        this.postsUpdated.next(Array.from(this.posts.values()));
       });
-    console.log('fmoeofpwopfw', this.posts);
+  }
+
+  deletePost(postId: string) {
+    this.httpClient.delete(`${URL.DELETE_POST}${postId}`).subscribe(() => {
+      this.posts.delete(postId);
+      this.postsUpdated.next(Array.from(this.posts.values()));
+    });
   }
 
   private buildNewPost(
-    id: number,
+    id: string,
     title: string,
     description: string,
     content: string
