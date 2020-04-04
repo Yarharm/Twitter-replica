@@ -1,5 +1,6 @@
+// Frontend representation of the Posts
 export interface PostModel {
-  id: number;
+  id: string;
   title: string;
   description: string;
   content: string;

@@ -13,7 +13,9 @@
     </p>
     <mat-action-row>
       <button color="primary" mat-button>EDIT</button>
-      <button color="warn" mat-button>DELETE</button>
+      <button color="warn" mat-button (click)="deletePost(post.id)">
+        DELETE
+      </button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>

@@ -4,4 +4,5 @@ export namespace URL {
   const API = `${BACKEND_DOMAIN}/api`;
   export const GET_POSTS = `${API}/posts`;
   export const CREATE_POST = `${API}/posts`;
+  export const DELETE_POST = `${API}/posts/`;
 }
