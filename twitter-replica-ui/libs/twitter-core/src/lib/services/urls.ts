@@ -5,4 +5,5 @@ export namespace URL {
   export const GET_POSTS = `${API}/posts`;
   export const CREATE_POST = `${API}/posts`;
   export const DELETE_POST = `${API}/posts/`;
+  export const UPDATE_POST = `${API}/posts/`;
 }

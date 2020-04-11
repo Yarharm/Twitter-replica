@@ -19,6 +19,10 @@ export const TwitterPostRoutes: Route[] = [
     path: 'create',
     component: TwitterPostCreateComponent,
   },
+  {
+    path: 'edit/:postId',
+    component: TwitterPostCreateComponent,
+  },
 ];
 
 @NgModule({

@@ -4,13 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import {
   PostModel,
   BackendPostModel,
-  BackendPostsModel
+  BackendPostsModel,
 } from 'libs/twitter-core/src';
 import { URL } from 'libs/twitter-core/src/lib/services/urls';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PostService {
   constructor(private readonly httpClient: HttpClient) {}
@@ -43,12 +43,12 @@ export class PostService {
       .get<BackendPostsModel>(URL.GET_POSTS)
       .pipe(
         map((postData: BackendPostsModel) => {
-          return postData.posts.map(post => {
+          return postData.posts.map((post) => {
             return {
               id: post._id,
               title: post.title,
               description: post.description,
-              content: post.content
+              content: post.content,
             };
           });
         })
@@ -59,6 +59,25 @@ export class PostService {
             postMap.set(transformPost.id, transformPost),
           new Map()
         );
+        this.postsUpdated.next(Array.from(this.posts.values()));
+      });
+  }
+
+  getPost(postId: string) {
+    return { ...this.posts.get(postId) };
+  }
+
+  updatePost(id: string, title: string, description: string, content: string) {
+    const updatedPost: PostModel = this.buildNewPost(
+      id,
+      title,
+      description,
+      content
+    );
+    this.httpClient
+      .put(`${URL.UPDATE_POST}${id}`, updatedPost)
+      .subscribe(() => {
+        this.posts.set(id, updatedPost);
         this.postsUpdated.next(Array.from(this.posts.values()));
       });
   }
