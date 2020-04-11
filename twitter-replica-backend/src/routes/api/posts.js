@@ -6,7 +6,7 @@ const Post = mongoose.model('Post');
 
 router.get(
   '/',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (_, res) => {
     const posts = await Post.find();
     res
       .json({
@@ -27,6 +27,20 @@ router.post(
     });
     const ret = await post.save();
     res.json(ret).send();
+  })
+);
+
+router.put(
+  '/:postId',
+  asyncHandler(async (req, res) => {
+    const post = new Post({
+      _id: req.body.id,
+      title: req.body.title,
+      description: req.body.description,
+      content: req.body.content,
+    });
+    await Post.updateOne({ _id: req.params.postId }, post);
+    res.status(200).json(post);
   })
 );
 
