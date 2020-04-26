@@ -22,17 +22,23 @@ export class PostService {
     return this.postsUpdated.asObservable();
   }
 
-  addPost(title: string, description: string, content: string) {
-    const post: PostModel = this.buildNewPost(
-      null,
-      title,
-      description,
-      content
-    );
+  addPost(title: string, description: string, content: string, media: File) {
+    const postInfo = new FormData();
+    postInfo.append('title', title);
+    postInfo.append('description', description);
+    postInfo.append('content', content);
+    postInfo.append('media', media, title);
+
     this.httpClient
-      .post<BackendPostModel>(URL.CREATE_POST, post)
+      .post<BackendPostModel>(URL.CREATE_POST, postInfo)
       .subscribe((postData: BackendPostModel) => {
-        post.id = postData._id;
+        const post: PostModel = this.buildNewPost(
+          postData._id,
+          postData.title,
+          postData.description,
+          postData.content,
+          postData.mediaPath
+        );
         this.posts.set(post.id, post);
         this.postsUpdated.next(Array.from(this.posts.values()));
       });
@@ -49,6 +55,7 @@ export class PostService {
               title: post.title,
               description: post.description,
               content: post.content,
+              mediaPath: post.mediaPath,
             };
           });
         })
@@ -67,17 +74,35 @@ export class PostService {
     return { ...this.posts.get(postId) };
   }
 
-  updatePost(id: string, title: string, description: string, content: string) {
-    const updatedPost: PostModel = this.buildNewPost(
-      id,
-      title,
-      description,
-      content
-    );
+  updatePost(
+    id: string,
+    title: string,
+    description: string,
+    content: string,
+    media: File | string
+  ) {
+    let updatedPost: FormData | PostModel = null;
+    if (typeof media === 'object') {
+      updatedPost = new FormData();
+      updatedPost.append('id', id);
+      updatedPost.append('title', title);
+      updatedPost.append('description', description);
+      updatedPost.append('content', content);
+      updatedPost.append('media', media, title);
+    } else {
+      updatedPost = this.buildNewPost(id, title, description, content, media);
+    }
     this.httpClient
-      .put(`${URL.UPDATE_POST}${id}`, updatedPost)
-      .subscribe(() => {
-        this.posts.set(id, updatedPost);
+      .put<BackendPostModel>(`${URL.UPDATE_POST}${id}`, updatedPost)
+      .subscribe((putData: BackendPostModel) => {
+        const post: PostModel = this.buildNewPost(
+          putData._id,
+          putData.title,
+          putData.description,
+          putData.content,
+          putData.mediaPath
+        );
+        this.posts.set(id, post);
         this.postsUpdated.next(Array.from(this.posts.values()));
       });
   }
@@ -93,8 +118,9 @@ export class PostService {
     id: string,
     title: string,
     description: string,
-    content: string
+    content: string,
+    mediaPath: string
   ) {
-    return { id, title, description, content };
+    return { id, title, description, content, mediaPath };
   }
 }

@@ -1,38 +1,33 @@
 <mat-card>
-  <form (submit)="onSubmitPost(postForm)" #postForm="ngForm">
+  <form [formGroup]="form" (submit)="onSubmitPost()" #postForm="ngForm">
     <mat-form-field>
       <mat-label>Title</mat-label>
-      <input
-        matInput
-        type="text"
-        name="title"
-        [ngModel]="currentPost?.title"
-        required
-        #postTitle="ngModel"
-      />
-      <mat-error *ngIf="postTitle.invalid">Missing title</mat-error>
+      <input matInput type="text" formControlName="title" />
+      <mat-error *ngIf="form.get('title').invalid">Missing title</mat-error>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Description</mat-label>
-      <input
-        matInput
-        type="text"
-        name="descripton"
-        [ngModel]="currentPost?.description"
-      />
+      <input matInput type="text" formControlName="descripton" />
     </mat-form-field>
     <mat-form-field>
       <mat-label>Content</mat-label>
-      <textarea
-        matInput
-        rows="6"
-        name="content"
-        [ngModel]="currentPost?.content"
-        required
-        #postContent="ngModel"
-      ></textarea>
-      <mat-error *ngIf="postContent.invalid">Missing content</mat-error>
+      <textarea matInput rows="6" formControlName="content"></textarea>
+      <mat-error *ngIf="form.get('content').invalid">Missing content</mat-error>
     </mat-form-field>
+    <div>
+      <button mat-stroked-button type="button" (click)="fileChooser.click()">
+        Choose Image
+      </button>
+      <input
+        type="file"
+        accept="image/*"
+        #fileChooser
+        (change)="onImageSelected($event)"
+      />
+    </div>
+    <div class="media-preview" *ngIf="imageURL !== '' && imageURL">
+      <img [src]="imageURL" [alt]="form.value.title" />
+    </div>
     <button mat-raised-button color="primary" type="submit">
       Save post
     </button>
