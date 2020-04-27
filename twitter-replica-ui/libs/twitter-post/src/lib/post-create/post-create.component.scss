@@ -7,3 +7,16 @@ mat-form-field,
 textarea {
   width: 100%;
 }
+
+input[type='file'] {
+  visibility: hidden;
+}
+
+.media-preview {
+  height: 5rem;
+  margin: 1rev 0;
+}
+
+.media-preview img {
+  height: 100%;
+}

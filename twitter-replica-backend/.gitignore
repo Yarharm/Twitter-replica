@@ -1,7 +1,10 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # Congif
-/src/config/*
+/src/config/databaseConfig.js
+
+# Media
+/media
 
 # compiled output
 /dist

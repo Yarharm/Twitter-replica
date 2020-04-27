@@ -32,3 +32,7 @@ To start a dev server.
 - `npm run start`
 
 The frontend is at [http://localhost:4200/](http://localhost:4200/) and the backend is at `localhost:3333`. The app will automatically reload if you make changes to any source files.
+
+### Work in progress
+
+- Background worker for automatic deletion of unused media files

@@ -4,4 +4,5 @@ export interface BackendPostModel {
   title: string;
   description: string;
   content: string;
+  mediaPath: string;
 }
