@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { TwitterPostCreateComponent } from './post-create/post-create.component';
 import { TwitterPostListComponent } from './post-list/post-list.component';
 
@@ -35,6 +36,7 @@ export const TwitterPostRoutes: Route[] = [
     MatCardModule,
     MatButtonModule,
     MatExpansionModule,
+    MatPaginatorModule,
   ],
   declarations: [TwitterPostCreateComponent, TwitterPostListComponent],
   exports: [
@@ -46,6 +48,7 @@ export const TwitterPostRoutes: Route[] = [
     MatCardModule,
     MatButtonModule,
     MatExpansionModule,
+    MatPaginatorModule,
   ],
 })
 export class TwitterPostModule {}

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   PostModel,
   BackendPostModel,
-  BackendPostsModel,
+  BackendPaginatedPostsModel,
+  FrontendPaginatedPostsModel,
 } from 'libs/twitter-core/src';
 import { URL } from 'libs/twitter-core/src/lib/services/urls';
 import { map } from 'rxjs/operators';
@@ -16,10 +17,15 @@ export class PostService {
   constructor(private readonly httpClient: HttpClient) {}
 
   private posts: Map<string, PostModel> = new Map();
+  private totalPosts = new Subject<number>();
   private postsUpdated = new Subject<PostModel[]>();
 
   getPostUpdateListener() {
     return this.postsUpdated.asObservable();
+  }
+
+  getTotalPostsListener() {
+    return this.totalPosts.asObservable();
   }
 
   addPost(title: string, description: string, content: string, media: File) {
@@ -44,29 +50,36 @@ export class PostService {
       });
   }
 
-  getPosts() {
+  getPosts(pageSize: number, currentPage: number) {
+    const params = new HttpParams({
+      fromString: `pageSize=${pageSize}&currentPage=${currentPage}`,
+    });
     this.httpClient
-      .get<BackendPostsModel>(URL.GET_POSTS)
+      .get<BackendPaginatedPostsModel>(URL.GET_POSTS, { params })
       .pipe(
-        map((postData: BackendPostsModel) => {
-          return postData.posts.map((post) => {
-            return {
-              id: post._id,
-              title: post.title,
-              description: post.description,
-              content: post.content,
-              mediaPath: post.mediaPath,
-            };
-          });
+        map((postData: BackendPaginatedPostsModel) => {
+          return {
+            posts: postData.posts.map((post: BackendPostModel) => {
+              return {
+                id: post._id,
+                title: post.title,
+                description: post.description,
+                content: post.content,
+                mediaPath: post.mediaPath,
+              };
+            }),
+            totalPostsCount: postData.totalPostsCount,
+          };
         })
       )
-      .subscribe((transformedPosts: PostModel[]) => {
-        this.posts = transformedPosts.reduce(
+      .subscribe((transformedPosts: FrontendPaginatedPostsModel) => {
+        this.posts = transformedPosts.posts.reduce(
           (postMap: Map<string, PostModel>, transformPost: PostModel) =>
             postMap.set(transformPost.id, transformPost),
           new Map()
         );
         this.postsUpdated.next(Array.from(this.posts.values()));
+        this.totalPosts.next(transformedPosts.totalPostsCount);
       });
   }
 
@@ -108,10 +121,7 @@ export class PostService {
   }
 
   deletePost(postId: string) {
-    this.httpClient.delete(`${URL.DELETE_POST}${postId}`).subscribe(() => {
-      this.posts.delete(postId);
-      this.postsUpdated.next(Array.from(this.posts.values()));
-    });
+    return this.httpClient.delete(`${URL.DELETE_POST}${postId}`);
   }
 
   private buildNewPost(

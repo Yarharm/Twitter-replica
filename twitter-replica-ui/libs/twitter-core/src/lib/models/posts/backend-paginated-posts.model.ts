@@ -1,6 +1,6 @@
 import { BackendPostModel } from './backend-post.model';
 
-export interface BackendPostsModel {
-  message: string;
+export interface BackendPaginatedPostsModel {
   posts: BackendPostModel[];
+  totalPostsCount: number;
 }

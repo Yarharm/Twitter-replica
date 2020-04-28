@@ -8,14 +8,20 @@ const Post = mongoose.model('Post');
 
 router.get(
   '/',
-  asyncHandler(async (_, res) => {
-    const posts = await Post.find();
-    res
-      .json({
-        message: 'Posts fetched successfully',
-        posts,
-      })
-      .send();
+  asyncHandler(async (req, res) => {
+    const pageSize = +req.query.pageSize;
+    const currentPage = +req.query.currentPage;
+    let posts;
+
+    if (pageSize && typeof currentPage !== 'undefined') {
+      posts = await Post.find()
+        .skip(pageSize * currentPage)
+        .limit(pageSize);
+    } else {
+      posts = await Post.find();
+    }
+    const totalPosts = await Post.estimatedDocumentCount();
+    res.json({ posts: posts, totalPostsCount: totalPosts }).send();
   })
 );
 
@@ -63,7 +69,8 @@ router.delete(
   '/:postId',
   asyncHandler(async (req, res) => {
     await Post.deleteOne({ _id: req.params.postId });
-    res.status(200).send();
+    const totalPosts = await Post.estimatedDocumentCount();
+    res.json({ totalPosts: totalPosts }).send();
   })
 );
 
