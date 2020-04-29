@@ -1,5 +1,5 @@
 <mat-accordion multi="true" *ngIf="posts.length > 0">
-  <mat-expansion-panel [expanded]="true" *ngFor="let post of posts">
+  <mat-expansion-panel [expanded]="expandPosts" *ngFor="let post of posts">
     <mat-expansion-panel-header>
       <mat-panel-title>
         {{ post.title }}
@@ -24,3 +24,9 @@
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
+<mat-paginator
+  [length]="postTotalCount"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="onChangePostPagination($event)"
+></mat-paginator>
