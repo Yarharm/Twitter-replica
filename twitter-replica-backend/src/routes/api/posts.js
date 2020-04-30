@@ -3,6 +3,7 @@ const router = require('express').Router();
 const mongoose = require('mongoose');
 const properties = require('../../properties');
 const uploadImage = require('../../config/mediaConfig');
+const auth = require('../auth');
 
 const Post = mongoose.model('Post');
 
@@ -21,15 +22,16 @@ router.get(
       posts = await Post.find();
     }
     const totalPosts = await Post.estimatedDocumentCount();
-    res.json({ posts: posts, totalPostsCount: totalPosts }).send();
+    res.json({ posts, totalPostsCount: totalPosts }).send();
   })
 );
 
 router.post(
   '/',
+  auth,
   uploadImage,
   asyncHandler(async (req, res) => {
-    const url = req.protocol + '://' + req.get('host');
+    const url = `${req.protocol}://${req.get('host')}`;
     const post = new Post({
       title: req.body.title,
       description: req.body.description,
@@ -43,12 +45,13 @@ router.post(
 
 router.put(
   '/:postId',
+  auth,
   uploadImage,
   asyncHandler(async (req, res) => {
     let currentMedia = req.body.mediaPath;
 
     if (req.file) {
-      const url = req.protocol + '://' + req.get('host');
+      const url = `${req.protocol}://${req.get('host')}`;
       currentMedia = url + properties.mediaPath + req.file.filename;
     }
 
@@ -67,10 +70,11 @@ router.put(
 
 router.delete(
   '/:postId',
+  auth,
   asyncHandler(async (req, res) => {
     await Post.deleteOne({ _id: req.params.postId });
     const totalPosts = await Post.estimatedDocumentCount();
-    res.json({ totalPosts: totalPosts }).send();
+    res.json({ totalPosts }).send();
   })
 );
 

@@ -7,7 +7,7 @@ import {
   BackendPaginatedPostsModel,
   FrontendPaginatedPostsModel,
 } from 'libs/twitter-core/src';
-import { URL } from 'libs/twitter-core/src/lib/services/urls';
+import { URL } from 'libs/twitter-core/src/lib/http-services/urls';
 import { map } from 'rxjs/operators';
 
 @Injectable({

@@ -171,6 +171,32 @@
           }
         }
       }
+    },
+    "twitter-auth": {
+      "root": "libs/twitter-auth",
+      "sourceRoot": "libs/twitter-auth/src",
+      "projectType": "library",
+      "prefix": "twitter",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/twitter-auth/src/test-setup.ts",
+            "tsConfig": "libs/twitter-auth/tsconfig.spec.json",
+            "karmaConfig": "libs/twitter-auth/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/twitter-auth/tsconfig.lib.json",
+              "libs/twitter-auth/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
     }
   },
   "defaultProject": "twitter-replica"

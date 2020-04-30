@@ -2,6 +2,7 @@
 
 # Congif
 /src/config/databaseConfig.js
+/src/config/authConfig.js
 
 # Media
 /media

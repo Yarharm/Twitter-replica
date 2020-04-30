@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const mongoConfig = require('./config/databaseConfig');
 require('./models/post.model');
+require('./models/user.model');
 const routes = require('./routes');
 const properties = require('./properties');
 
