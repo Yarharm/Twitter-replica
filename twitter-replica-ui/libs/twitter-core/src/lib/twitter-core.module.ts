@@ -5,6 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
 import { HeaderComponent } from './header/header.component';
+import { httpInterceptorProviders } from './http-interceptors';
 
 @NgModule({
   declarations: [HeaderComponent],
@@ -15,6 +16,7 @@ import { HeaderComponent } from './header/header.component';
     HttpClientModule,
     MatButtonModule,
   ],
+  providers: [httpInterceptorProviders],
   exports: [MatToolbarModule, HeaderComponent, HttpClientModule],
 })
 export class TwitterCoreModule {}
