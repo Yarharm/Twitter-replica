@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const router = require('express').Router();
 const mongoose = require('mongoose');
 const properties = require('../../properties');
-const uploadImage = require('../../config/mediaConfig');
+const uploadImage = require('../../configs/mediaConfig');
 const auth = require('../auth');
 
 const Post = mongoose.model('Post');

@@ -1,8 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# Congif
-/src/config/databaseConfig.js
-/src/config/authConfig.js
+# Environmental vars
+/*.env
 
 # Media
 /media
