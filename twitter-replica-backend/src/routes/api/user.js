@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const router = require('express').Router();
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const saltRounds = 10;
 

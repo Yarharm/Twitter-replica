@@ -1,9 +1,10 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const mongoConfig = require('./config/databaseConfig');
+const mongoConfig = require('./configs/databaseConfig');
 require('./models/post.model');
 require('./models/user.model');
 const routes = require('./routes');
@@ -13,7 +14,7 @@ async function bootstrap() {
   const isProduction = process.env.NODE_ENV === 'production';
 
   const app = express();
-  const port = process.env.port || 3333;
+  const port = process.env.PORT || 3333;
   app.use(cors());
   app.use(bodyParser.json());
   app.use(
@@ -23,10 +24,10 @@ async function bootstrap() {
 
   // Connect to mongoDB
   if (isProduction) {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(process.env.DB_URI_PROD, mongoConfig);
   } else {
     try {
-      await mongoose.connect(process.env.MONGODB_LOCAL, mongoConfig);
+      await mongoose.connect(process.env.DB_URI_DEV, mongoConfig);
       mongoose.set('debug', true);
       console.log('Connected to DB');
     } catch (err) {
