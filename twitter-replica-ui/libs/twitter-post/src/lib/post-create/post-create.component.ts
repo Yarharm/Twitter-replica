@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import {
   PostService,
   PostModel,
@@ -16,7 +15,6 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 export class TwitterPostCreateComponent implements OnInit {
   constructor(
     private readonly postService: PostService,
-    private router: Router,
     public route: ActivatedRoute
   ) {}
 
@@ -83,7 +81,6 @@ export class TwitterPostCreateComponent implements OnInit {
         this.form.value.media
       );
     }
-    this.router.navigate(['/']);
   }
 
   onImageSelected(event: Event) {
