@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { PostModel, PostService } from 'libs/twitter-core/src';
+import { PostModel, PostService, AuthService } from 'libs/twitter-core/src';
 import { Subscription, throwError } from 'rxjs';
 
 @Component({
@@ -9,13 +9,18 @@ import { Subscription, throwError } from 'rxjs';
   styleUrls: ['./post-list.component.scss'],
 })
 export class TwitterPostListComponent implements OnInit, OnDestroy {
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly authService: AuthService
+  ) {}
   posts: PostModel[] = [];
   expandPosts = false;
   postTotalCount = 10;
   pageSize = 2;
   currentPage = 0;
   pageSizeOptions = [1, 2, 5, 10];
+  authStatus = false;
+  private authTokenSubs = new Subscription();
   private postsSubsciption: Subscription;
   private totalPostsCountSubscription: Subscription;
 
@@ -29,6 +34,12 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
       .getTotalPostsListener()
       .subscribe((totalPostsCount: number) => {
         this.postTotalCount = totalPostsCount;
+      });
+    this.authStatus = this.authService.getAuthStatus();
+    this.authTokenSubs = this.authService
+      .getAuthTokenListener()
+      .subscribe((hasAuthToken: boolean) => {
+        this.authStatus = hasAuthToken;
       });
   }
 
@@ -53,5 +64,6 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.postsSubsciption.unsubscribe();
     this.totalPostsCountSubscription.unsubscribe();
+    this.authTokenSubs.unsubscribe();
   }
 }

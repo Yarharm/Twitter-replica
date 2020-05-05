@@ -9,12 +9,16 @@ import {
 } from 'libs/twitter-core/src';
 import { URL } from 'libs/twitter-core/src/lib/http-services/urls';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(
+    private readonly httpClient: HttpClient,
+    private router: Router
+  ) {}
 
   private posts: Map<string, PostModel> = new Map();
   private totalPosts = new Subject<number>();
@@ -47,6 +51,7 @@ export class PostService {
         );
         this.posts.set(post.id, post);
         this.postsUpdated.next(Array.from(this.posts.values()));
+        this.router.navigate([URL.HOME_PAGE]);
       });
   }
 
@@ -117,6 +122,7 @@ export class PostService {
         );
         this.posts.set(id, post);
         this.postsUpdated.next(Array.from(this.posts.values()));
+        this.router.navigate([URL.HOME_PAGE]);
       });
   }
 
