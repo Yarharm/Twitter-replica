@@ -1,16 +1,11 @@
-:host {
-  display: block;
-  margin-top: 1rem;
-  width: 100%;
+.post {
+  width: 400px;
+  margin: 0 auto;
+  width: 50%;
 }
 
-.post-image {
-  width: 15%;
-}
-
-.post-image img {
-  width: 100%;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+.fill-remaining-space {
+  flex: 1 1 auto;
 }
 
 mat-paginator {

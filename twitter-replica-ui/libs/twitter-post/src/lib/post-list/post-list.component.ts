@@ -16,21 +16,21 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
   posts: PostModel[] = [];
   expandPosts = false;
   postTotalCount = 10;
-  pageSize = 2;
+  pageSize = 5;
   currentPage = 0;
   pageSizeOptions = [1, 2, 5, 10];
   authStatus = false;
   private authTokenSubs = new Subscription();
-  private postsSubsciption: Subscription;
-  private totalPostsCountSubscription: Subscription;
+  private postsSubs: Subscription;
+  private totalPostsCountSubs: Subscription;
 
   ngOnInit(): void {
     this.postService.getPosts(this.pageSize, this.currentPage);
-    this.postsSubsciption = this.postService.getPostUpdateListener().subscribe(
+    this.postsSubs = this.postService.getPostUpdateListener().subscribe(
       (receivedPosts: PostModel[]) => (this.posts = receivedPosts),
       () => throwError(new Error('Could not fetch created posts!'))
     );
-    this.totalPostsCountSubscription = this.postService
+    this.totalPostsCountSubs = this.postService
       .getTotalPostsListener()
       .subscribe((totalPostsCount: number) => {
         this.postTotalCount = totalPostsCount;
@@ -62,8 +62,8 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.postsSubsciption.unsubscribe();
-    this.totalPostsCountSubscription.unsubscribe();
+    this.postsSubs.unsubscribe();
+    this.totalPostsCountSubs.unsubscribe();
     this.authTokenSubs.unsubscribe();
   }
 }

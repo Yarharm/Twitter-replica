@@ -24,6 +24,7 @@ export class TwitterPostCreateComponent implements OnInit {
   currentPost: PostModel;
   form: FormGroup;
   imageURL: string;
+  expandEmpojiBar = false;
   private createMode = true;
   private postId: string;
 
@@ -92,5 +93,14 @@ export class TwitterPostCreateComponent implements OnInit {
       this.imageURL = fileReader.result as string;
     };
     fileReader.readAsDataURL(file);
+  }
+
+  addEmoji(event: { emoji: any; event: Event }) {
+    const currentContent = this.form.controls.content.value
+      ? this.form.controls.content.value
+      : '';
+    this.form.patchValue({
+      content: currentContent + event.emoji.native,
+    });
   }
 }

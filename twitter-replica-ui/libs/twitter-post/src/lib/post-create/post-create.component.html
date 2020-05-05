@@ -14,10 +14,28 @@
       <textarea matInput rows="6" formControlName="content"></textarea>
       <mat-error *ngIf="form.get('content').invalid">Missing content</mat-error>
     </mat-form-field>
+    <button
+      mat-icon-button
+      color="accent"
+      type="button"
+      (click)="expandEmpojiBar = !expandEmpojiBar"
+    >
+      <mat-icon>insert_emoticon</mat-icon>
+    </button>
+    <div>
+      <emoji-mart
+        *ngIf="expandEmpojiBar"
+        title="Pick your emoj"
+        emoji="point_up"
+        set="twitter"
+        (emojiSelect)="addEmoji($event)"
+      ></emoji-mart>
+    </div>
     <div>
       <button mat-stroked-button type="button" (click)="fileChooser.click()">
         Choose Image
       </button>
+
       <input
         type="file"
         accept="image/*"

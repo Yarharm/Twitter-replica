@@ -41,18 +41,7 @@ export class PostService {
 
     this.httpClient
       .post<BackendPostModel>(URL.CREATE_POST, postInfo)
-      .subscribe((postData: BackendPostModel) => {
-        const post: PostModel = this.buildNewPost(
-          postData._id,
-          postData.title,
-          postData.description,
-          postData.content,
-          postData.mediaPath
-        );
-        this.posts.set(post.id, post);
-        this.postsUpdated.next(Array.from(this.posts.values()));
-        this.router.navigate([URL.HOME_PAGE]);
-      });
+      .subscribe(() => this.router.navigate([URL.HOME_PAGE]));
   }
 
   getPosts(pageSize: number, currentPage: number) {
@@ -112,18 +101,7 @@ export class PostService {
     }
     this.httpClient
       .put<BackendPostModel>(`${URL.UPDATE_POST}${id}`, updatedPost)
-      .subscribe((putData: BackendPostModel) => {
-        const post: PostModel = this.buildNewPost(
-          putData._id,
-          putData.title,
-          putData.description,
-          putData.content,
-          putData.mediaPath
-        );
-        this.posts.set(id, post);
-        this.postsUpdated.next(Array.from(this.posts.values()));
-        this.router.navigate([URL.HOME_PAGE]);
-      });
+      .subscribe(() => this.router.navigate([URL.HOME_PAGE]));
   }
 
   deletePost(postId: string) {
