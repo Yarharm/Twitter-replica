@@ -8,9 +8,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { AuthGuard } from '@twitter-replica/core';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { TwitterPostCreateComponent } from './post-create/post-create.component';
 import { TwitterPostListComponent } from './post-list/post-list.component';
-import { AuthGuard } from '@twitter-replica/core';
 
 export const TwitterPostRoutes: Route[] = [
   {
@@ -40,6 +43,9 @@ export const TwitterPostRoutes: Route[] = [
     MatButtonModule,
     MatExpansionModule,
     MatPaginatorModule,
+    MatMenuModule,
+    MatIconModule,
+    PickerModule,
   ],
   declarations: [TwitterPostCreateComponent, TwitterPostListComponent],
   exports: [
@@ -51,7 +57,10 @@ export const TwitterPostRoutes: Route[] = [
     MatCardModule,
     MatButtonModule,
     MatExpansionModule,
+    MatMenuModule,
     MatPaginatorModule,
+    MatIconModule,
+    PickerModule,
   ],
 })
 export class TwitterPostModule {}
