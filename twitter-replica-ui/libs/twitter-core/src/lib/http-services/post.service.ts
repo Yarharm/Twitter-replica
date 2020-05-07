@@ -32,12 +32,10 @@ export class PostService {
     return this.totalPosts.asObservable();
   }
 
-  addPost(title: string, description: string, content: string, media: File) {
+  addPost(content: string, media: File) {
     const postInfo = new FormData();
-    postInfo.append('title', title);
-    postInfo.append('description', description);
     postInfo.append('content', content);
-    postInfo.append('media', media, title);
+    postInfo.append('media', media);
 
     this.httpClient
       .post<BackendPostModel>(URL.CREATE_POST, postInfo)
@@ -56,10 +54,9 @@ export class PostService {
             posts: postData.posts.map((post: BackendPostModel) => {
               return {
                 id: post._id,
-                title: post.title,
-                description: post.description,
                 content: post.content,
                 mediaPath: post.mediaPath,
+                creatorId: post.creatorId,
               };
             }),
             totalPostsCount: postData.totalPostsCount,
@@ -81,23 +78,15 @@ export class PostService {
     return { ...this.posts.get(postId) };
   }
 
-  updatePost(
-    id: string,
-    title: string,
-    description: string,
-    content: string,
-    media: File | string
-  ) {
+  updatePost(id: string, content: string, media: File | string) {
     let updatedPost: FormData | PostModel = null;
     if (typeof media === 'object') {
       updatedPost = new FormData();
       updatedPost.append('id', id);
-      updatedPost.append('title', title);
-      updatedPost.append('description', description);
       updatedPost.append('content', content);
-      updatedPost.append('media', media, title);
+      updatedPost.append('media', media);
     } else {
-      updatedPost = this.buildNewPost(id, title, description, content, media);
+      updatedPost = this.buildNewPost(id, content, media);
     }
     this.httpClient
       .put<BackendPostModel>(`${URL.UPDATE_POST}${id}`, updatedPost)
@@ -110,11 +99,10 @@ export class PostService {
 
   private buildNewPost(
     id: string,
-    title: string,
-    description: string,
     content: string,
-    mediaPath: string
-  ) {
-    return { id, title, description, content, mediaPath };
+    mediaPath: string,
+    creatorId: string = null
+  ): PostModel {
+    return { id, content, mediaPath, creatorId };
   }
 }

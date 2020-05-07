@@ -1,15 +1,6 @@
 <mat-card>
   <form [formGroup]="form" (submit)="onSubmitPost()">
     <mat-form-field>
-      <mat-label>Title</mat-label>
-      <input matInput type="text" formControlName="title" />
-      <mat-error *ngIf="form.get('title').invalid">Missing title</mat-error>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Description</mat-label>
-      <input matInput type="text" formControlName="descripton" />
-    </mat-form-field>
-    <mat-form-field>
       <mat-label>Content</mat-label>
       <textarea matInput rows="6" formControlName="content"></textarea>
       <mat-error *ngIf="form.get('content').invalid">Missing content</mat-error>

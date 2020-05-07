@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.plugin(uniqueValidator, { message: 'is already taken.' });
 
-userSchema.methods.generateJWT = async () => {
+userSchema.methods.generateJWT = function generateJWT() {
   return jwt.sign(
     { id: this._id, username: this.username },
     authConfig.secret,

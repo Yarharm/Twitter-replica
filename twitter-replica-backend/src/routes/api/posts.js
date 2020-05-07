@@ -33,10 +33,9 @@ router.post(
   asyncHandler(async (req, res) => {
     const url = `${req.protocol}://${req.get('host')}`;
     const post = new Post({
-      title: req.body.title,
-      description: req.body.description,
       content: req.body.content,
       mediaPath: url + properties.mediaPath + req.file.filename,
+      creatorId: req.userData.id,
     });
     const ret = await post.save();
     res.json(ret).send();
@@ -57,13 +56,18 @@ router.put(
 
     const post = new Post({
       _id: req.body.id,
-      title: req.body.title,
-      description: req.body.description,
       content: req.body.content,
       mediaPath: currentMedia,
+      creatorId: req.userData.id,
     });
 
-    await Post.updateOne({ _id: req.params.postId }, post);
+    const result = await Post.updateOne(
+      { _id: req.params.postId, creatorId: req.userData.id },
+      post
+    );
+    if (result.nModified <= 0) {
+      res.status(401).send();
+    }
     res.json(post).send();
   })
 );
@@ -72,7 +76,14 @@ router.delete(
   '/:postId',
   auth,
   asyncHandler(async (req, res) => {
-    await Post.deleteOne({ _id: req.params.postId });
+    const result = await Post.deleteOne({
+      _id: req.params.postId,
+      creatorId: req.userData.id,
+    });
+    if (result.n <= 0) {
+      res.status(401).send();
+    }
+
     const totalPosts = await Post.estimatedDocumentCount();
     res.json({ totalPosts }).send();
   })

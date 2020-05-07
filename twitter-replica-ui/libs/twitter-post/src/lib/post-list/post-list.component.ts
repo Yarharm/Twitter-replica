@@ -20,6 +20,7 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
   currentPage = 0;
   pageSizeOptions = [1, 2, 5, 10];
   authStatus = false;
+  userId: string;
   private authTokenSubs = new Subscription();
   private postsSubs: Subscription;
   private totalPostsCountSubs: Subscription;
@@ -36,10 +37,12 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
         this.postTotalCount = totalPostsCount;
       });
     this.authStatus = this.authService.getAuthStatus();
+    this.userId = this.authService.getUserId();
     this.authTokenSubs = this.authService
       .getAuthTokenListener()
       .subscribe((hasAuthToken: boolean) => {
         this.authStatus = hasAuthToken;
+        this.userId = this.authService.getUserId();
       });
   }
 
@@ -57,7 +60,8 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
           this.currentPage * this.pageSize < postCount.totalPosts
             ? this.currentPage
             : this.currentPage - 1;
-        this.postService.getPosts(this.pageSize, page);
+
+        this.postService.getPosts(this.pageSize, page >= 0 ? page : 0);
       });
   }
 

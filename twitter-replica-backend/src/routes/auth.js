@@ -10,7 +10,7 @@ const auth = (req, res, next) => {
       throw new Error('Invalid authorization type');
     }
 
-    jwt.verify(token, authConfig.secret);
+    req.userData = jwt.verify(token, authConfig.secret);
     next();
   } catch (err) {
     res.sendStatus(401);
