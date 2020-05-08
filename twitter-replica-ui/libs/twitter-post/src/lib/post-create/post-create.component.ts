@@ -18,8 +18,6 @@ export class TwitterPostCreateComponent implements OnInit {
     public route: ActivatedRoute
   ) {}
 
-  title: string;
-  descripton: string;
   content: string;
   currentPost: PostModel;
   form: FormGroup;
@@ -30,10 +28,6 @@ export class TwitterPostCreateComponent implements OnInit {
 
   ngOnInit() {
     this.form = new FormGroup({
-      title: new FormControl(null, {
-        validators: [Validators.required, Validators.minLength(3)],
-      }),
-      descripton: new FormControl(null),
       content: new FormControl(null, {
         validators: [Validators.required],
       }),
@@ -49,8 +43,6 @@ export class TwitterPostCreateComponent implements OnInit {
         this.postId = paramMap.get('postId');
         this.currentPost = this.postService.getPost(this.postId);
         this.form.patchValue({
-          title: this.currentPost.title,
-          description: this.currentPost.description,
           content: this.currentPost.content,
           media: this.currentPost.mediaPath,
         });
@@ -66,18 +58,11 @@ export class TwitterPostCreateComponent implements OnInit {
       return;
     }
     if (this.createMode) {
-      this.postService.addPost(
-        this.form.value.title,
-        this.form.value.descripton,
-        this.form.value.content,
-        this.form.value.media
-      );
+      this.postService.addPost(this.form.value.content, this.form.value.media);
       this.form.reset();
     } else {
       this.postService.updatePost(
         this.postId,
-        this.form.value.title,
-        this.form.value.descripton,
         this.form.value.content,
         this.form.value.media
       );

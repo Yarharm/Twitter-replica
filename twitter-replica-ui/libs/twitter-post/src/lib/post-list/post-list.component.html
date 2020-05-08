@@ -12,12 +12,13 @@
     <span class="fill-remaining-space"></span>
     <!-- <post-list-menu></post-list-menu> -->
     <button
-      mat-icon-button
+      mat-mini-fab
+      color="primary"
       [matMenuTriggerFor]="menu"
       aria-label="Post list menu actions"
-      [disabled]="!authStatus"
+      [disabled]="!authStatus || userId != post.creatorId"
     >
-      <mat-icon *ngIf="authStatus">menu</mat-icon>
+      <mat-icon *ngIf="authStatus && userId == post.creatorId">menu</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
       <a mat-menu-item [routerLink]="['/post/edit', post.id]"
@@ -31,12 +32,20 @@
     </mat-menu>
     <!-- <post-list-menu></post-list-menu> -->
   </mat-card-header>
-  <img mat-card-image [src]="post.mediaPath" [alt]="post.title" />
   <mat-card-content>
     <p>
       {{ post.content }}
     </p>
   </mat-card-content>
+  <img mat-card-image [src]="post.mediaPath" alt="No image available" />
+  <mat-card-footer
+    ><button mat-icon-button aria-label="Like button">
+      <mat-icon>favorite</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="Share button">
+      <mat-icon>share</mat-icon>
+    </button>
+  </mat-card-footer>
 </mat-card>
 <mat-paginator
   [length]="postTotalCount"

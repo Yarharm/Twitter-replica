@@ -6,7 +6,7 @@ import {
   BackendSignupModel,
   SignupModel,
   LoginModel,
-  AuthToken,
+  BackendLogin,
 } from 'libs/twitter-core/src';
 import { URL } from './urls';
 
@@ -14,6 +14,7 @@ import { URL } from './urls';
   providedIn: 'root',
 })
 export class AuthService {
+  private userId: string;
   private token = '';
   private authStatus = false;
   private authTokenListener = new Subject<boolean>();
@@ -28,21 +29,26 @@ export class AuthService {
 
     this.httpClient
       .post<BackendSignupModel>(URL.AUTH_SIGNUP, userInfo)
-      .subscribe();
+      .subscribe(() => this.router.navigate([URL.HOME_PAGE]));
   }
 
   loginUser(username: string, password: string) {
     const loginInfo: LoginModel = this.buildLoginData(username, password);
 
     this.httpClient
-      .post<AuthToken>(URL.AUTH_LOGIN, loginInfo)
-      .subscribe((authToken: AuthToken) => {
-        this.token = authToken.token;
+      .post<BackendLogin>(URL.AUTH_LOGIN, loginInfo)
+      .subscribe((loginRes: BackendLogin) => {
+        this.token = loginRes.token;
+        this.userId = loginRes.userId;
         this.authStatus = true;
         this.authTokenListener.next(this.authStatus);
         this.saveAuthInfo();
         this.router.navigate([URL.HOME_PAGE]);
       });
+  }
+
+  getUserId() {
+    return this.userId;
   }
 
   getAuthTokenListener() {
@@ -58,6 +64,7 @@ export class AuthService {
   }
 
   logout() {
+    this.userId = null;
     this.token = '';
     this.authStatus = false;
     this.authTokenListener.next(this.authStatus);
@@ -67,20 +74,22 @@ export class AuthService {
 
   fetchAuthFromStorage() {
     this.token = localStorage.getItem('token') || '';
-    console.log('FETCHING TOKEN ', this.token);
     if (!this.token) {
       return;
     }
+    this.userId = localStorage.getItem('userId');
     this.authStatus = true;
     this.authTokenListener.next(this.authStatus);
   }
 
   private saveAuthInfo() {
     localStorage.setItem('token', this.token);
+    localStorage.setItem('userId', this.userId);
   }
 
   private clearAuthInfo() {
     localStorage.removeItem('token');
+    localStorage.removeItem('userId');
   }
 
   private buildLoginData(username: string, password: string): LoginModel {

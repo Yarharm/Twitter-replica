@@ -21,7 +21,7 @@ router.post(
     }
 
     const token = await user.generateJWT();
-    return res.json({ token }).send();
+    return res.json({ token, userId: user._id }).send();
   })
 );
 
