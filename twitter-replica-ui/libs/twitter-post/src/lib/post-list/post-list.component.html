@@ -1,18 +1,14 @@
 <mat-card class="post" *ngFor="let post of posts">
   <mat-card-header>
     <div mat-card-avatar>
-      <img
-        mat-card-avatar
-        src="https://material.angular.io/assets/img/examples/shiba1.jpg"
-        alt="Shiba"
-      />
+      <img mat-card-avatar [src]="currentUser.avatar" alt="No avatar image" />
     </div>
-    <mat-card-title>Shiba Inu</mat-card-title>
-    <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+    <mat-card-title>{{ currentUser.name }}</mat-card-title>
+    <mat-card-subtitle>{{ currentUser.username }}</mat-card-subtitle>
     <span class="fill-remaining-space"></span>
     <!-- <post-list-menu></post-list-menu> -->
     <button
-      mat-mini-fab
+      mat-icon-button
       color="primary"
       [matMenuTriggerFor]="menu"
       aria-label="Post list menu actions"
@@ -21,7 +17,9 @@
       <mat-icon *ngIf="authStatus && userId == post.creatorId">menu</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <a mat-menu-item [routerLink]="['/post/edit', post.id]"
+      <a
+        mat-menu-item
+        [routerLink]="['/user', usernamePrefix, 'post', 'edit', post.id]"
         ><mat-icon>edit</mat-icon><span>EDIT</span></a
       >
 

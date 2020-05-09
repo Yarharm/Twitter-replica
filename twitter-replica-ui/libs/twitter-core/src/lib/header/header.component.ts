@@ -9,7 +9,10 @@ import { Subscription } from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   authStatus = false;
+  usernamePrefix: string;
   private authTokenSubs = new Subscription();
+  private usernamePrefixSubs = new Subscription();
+
   constructor(private readonly authService: AuthService) {}
 
   ngOnInit() {
@@ -19,6 +22,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe((hasAuthToken: boolean) => {
         this.authStatus = hasAuthToken;
       });
+
+    this.usernamePrefix = this.authService.getUsernamePrefix();
+    this.usernamePrefixSubs = this.authService
+      .getUsernamePrefixListener()
+      .subscribe((prefix: string) => {
+        this.usernamePrefix = prefix;
+      });
   }
 
   onLogOut() {
@@ -27,5 +37,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.authTokenSubs.unsubscribe();
+    this.usernamePrefixSubs.unsubscribe();
   }
 }

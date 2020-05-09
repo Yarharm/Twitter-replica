@@ -6,7 +6,8 @@ import {
   BackendPostModel,
   BackendPaginatedPostsModel,
   FrontendPaginatedPostsModel,
-} from 'libs/twitter-core/src';
+} from '../models';
+import { AuthService } from './auth.service';
 import { URL } from 'libs/twitter-core/src/lib/http-services/urls';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -17,6 +18,7 @@ import { Router } from '@angular/router';
 export class PostService {
   constructor(
     private readonly httpClient: HttpClient,
+    private readonly authService: AuthService,
     private router: Router
   ) {}
 
@@ -33,21 +35,30 @@ export class PostService {
   }
 
   addPost(content: string, media: File) {
+    const usernamePrefix = this.authService.getUsernamePrefix();
     const postInfo = new FormData();
     postInfo.append('content', content);
     postInfo.append('media', media);
 
     this.httpClient
-      .post<BackendPostModel>(URL.CREATE_POST, postInfo)
-      .subscribe(() => this.router.navigate([URL.HOME_PAGE]));
+      .post<BackendPostModel>(
+        `${URL.GET_USER}${usernamePrefix}${URL.UPDATE_POST}`,
+        postInfo
+      )
+      .subscribe(() => {
+        this.router.navigate([`/user/${usernamePrefix}`]);
+      });
   }
 
-  getPosts(pageSize: number, currentPage: number) {
+  getPosts(usernamePrefix: string, pageSize: number, currentPage: number) {
     const params = new HttpParams({
       fromString: `pageSize=${pageSize}&currentPage=${currentPage}`,
     });
     this.httpClient
-      .get<BackendPaginatedPostsModel>(URL.GET_POSTS, { params })
+      .get<BackendPaginatedPostsModel>(
+        `${URL.GET_USER}${usernamePrefix}${URL.GET_POSTS}`,
+        { params }
+      )
       .pipe(
         map((postData: BackendPaginatedPostsModel) => {
           return {
@@ -79,6 +90,7 @@ export class PostService {
   }
 
   updatePost(id: string, content: string, media: File | string) {
+    const usernamePrefix = this.authService.getUsernamePrefix();
     let updatedPost: FormData | PostModel = null;
     if (typeof media === 'object') {
       updatedPost = new FormData();
@@ -89,20 +101,27 @@ export class PostService {
       updatedPost = this.buildNewPost(id, content, media);
     }
     this.httpClient
-      .put<BackendPostModel>(`${URL.UPDATE_POST}${id}`, updatedPost)
-      .subscribe(() => this.router.navigate([URL.HOME_PAGE]));
+      .put<BackendPostModel>(
+        `${URL.GET_USER}${usernamePrefix}${URL.UPDATE_POST}${id}`,
+        updatedPost
+      )
+      .subscribe(() => this.router.navigate([`/user/${usernamePrefix}`]));
   }
 
   deletePost(postId: string) {
-    return this.httpClient.delete(`${URL.DELETE_POST}${postId}`);
+    const usernamePrefix = this.authService.getUsernamePrefix();
+    return this.httpClient.delete(
+      `${URL.GET_USER}${usernamePrefix}${URL.DELETE_POST}${postId}`
+    );
   }
 
   private buildNewPost(
     id: string,
     content: string,
     mediaPath: string,
+    creatorUsernamePrefix: string = null,
     creatorId: string = null
   ): PostModel {
-    return { id, content, mediaPath, creatorId };
+    return { id, content, mediaPath, creatorUsernamePrefix, creatorId };
   }
 }

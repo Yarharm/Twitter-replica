@@ -6,6 +6,7 @@ const authConfig = require('../configs/authConfig');
 const userSchema = new mongoose.Schema({
   email: { type: String, require: true, unique: true },
   username: { type: String, require: true, unique: true },
+  usernamePrefix: { type: String, require: true, unique: true },
   password: { type: String, require: true },
 });
 
@@ -13,7 +14,11 @@ userSchema.plugin(uniqueValidator, { message: 'is already taken.' });
 
 userSchema.methods.generateJWT = function generateJWT() {
   return jwt.sign(
-    { id: this._id, username: this.username },
+    {
+      id: this._id,
+      username: this.username,
+      usernamePrefix: this.usernamePrefix,
+    },
     authConfig.secret,
     {
       expiresIn: authConfig.expiration,

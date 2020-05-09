@@ -1,7 +1,10 @@
 <mat-toolbar color="primary">
-  <span><a routerLink="/">My Posts</a></span>
+  <span><a [routerLink]="['/user', usernamePrefix]">My Posts</a></span>
   <span *ngIf="authStatus"
-    ><a mat-button routerLink="/post/create" routerLinkActive="mat-accent"
+    ><a
+      mat-button
+      [routerLink]="['/user', usernamePrefix, 'post', 'create']"
+      routerLinkActive="mat-accent"
       >Create Post</a
     ></span
   >

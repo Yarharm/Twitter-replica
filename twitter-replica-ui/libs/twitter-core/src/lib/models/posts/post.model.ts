@@ -4,4 +4,5 @@ export interface PostModel {
   content: string;
   mediaPath: string;
   creatorId: string;
+  creatorUsernamePrefix: string;
 }

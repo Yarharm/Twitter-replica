@@ -8,6 +8,10 @@ const postSchema = new mongoose.Schema({
     ref: 'User',
     require: true,
   },
+  creatorUsernamePrefix: {
+    type: String,
+    require: true,
+  },
 });
 
 mongoose.model('Post', postSchema);
