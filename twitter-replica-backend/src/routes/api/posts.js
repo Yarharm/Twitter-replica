@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const router = require('express').Router();
+const router = require('express').Router({ mergeParams: true });
 const mongoose = require('mongoose');
 const properties = require('../../properties');
 const uploadImage = require('../../configs/mediaConfig');
@@ -13,13 +13,16 @@ router.get(
     const pageSize = +req.query.pageSize;
     const currentPage = +req.query.currentPage;
     let posts;
-
     if (pageSize && typeof currentPage !== 'undefined') {
-      posts = await Post.find()
+      posts = await Post.find({
+        creatorUsernamePrefix: req.params.usernamePrefix,
+      })
         .skip(pageSize * currentPage)
         .limit(pageSize);
     } else {
-      posts = await Post.find();
+      posts = await Post.find({
+        creatorUsernamePrefix: req.params.usernamePrefix,
+      });
     }
     const totalPosts = await Post.estimatedDocumentCount();
     res.json({ posts, totalPostsCount: totalPosts }).send();
@@ -36,6 +39,7 @@ router.post(
       content: req.body.content,
       mediaPath: url + properties.mediaPath + req.file.filename,
       creatorId: req.userData.id,
+      creatorUsernamePrefix: req.userData.usernamePrefix,
     });
     const ret = await post.save();
     res.json(ret).send();
@@ -59,6 +63,7 @@ router.put(
       content: req.body.content,
       mediaPath: currentMedia,
       creatorId: req.userData.id,
+      creatorUsernamePrefix: req.userData.usernamePrefix,
     });
 
     const result = await Post.updateOne(

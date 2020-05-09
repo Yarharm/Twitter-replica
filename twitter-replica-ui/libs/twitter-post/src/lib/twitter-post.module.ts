@@ -16,10 +16,10 @@ import { TwitterPostCreateComponent } from './post-create/post-create.component'
 import { TwitterPostListComponent } from './post-list/post-list.component';
 
 export const TwitterPostRoutes: Route[] = [
-  {
-    path: '',
-    component: TwitterPostListComponent,
-  },
+  // {
+  //   path: '',
+  //   component: TwitterPostListComponent,
+  // },
   {
     path: 'create',
     component: TwitterPostCreateComponent,

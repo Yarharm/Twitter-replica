@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import {
-  BackendSignupModel,
+  SignupResponseModel,
   SignupModel,
   LoginModel,
-  BackendLogin,
-} from 'libs/twitter-core/src';
+  LoginResponseModel,
+} from '../models';
 import { URL } from './urls';
 
 @Injectable({
@@ -17,7 +17,9 @@ export class AuthService {
   private userId: string;
   private token = '';
   private authStatus = false;
+  private usernamePrefix: string;
   private authTokenListener = new Subject<boolean>();
+  private usernamePrefixListener = new Subject<string>();
 
   constructor(
     private readonly httpClient: HttpClient,
@@ -28,22 +30,24 @@ export class AuthService {
     const userInfo: SignupModel = this.buildNewUser(email, username, password);
 
     this.httpClient
-      .post<BackendSignupModel>(URL.AUTH_SIGNUP, userInfo)
-      .subscribe(() => this.router.navigate([URL.HOME_PAGE]));
+      .post<SignupResponseModel>(URL.AUTH_SIGNUP, userInfo)
+      .subscribe(() => this.loginUser(username, password));
   }
 
   loginUser(username: string, password: string) {
     const loginInfo: LoginModel = this.buildLoginData(username, password);
 
     this.httpClient
-      .post<BackendLogin>(URL.AUTH_LOGIN, loginInfo)
-      .subscribe((loginRes: BackendLogin) => {
+      .post<LoginResponseModel>(URL.AUTH_LOGIN, loginInfo)
+      .subscribe((loginRes: LoginResponseModel) => {
         this.token = loginRes.token;
         this.userId = loginRes.userId;
+        this.usernamePrefix = loginRes.usernamePrefix;
         this.authStatus = true;
         this.authTokenListener.next(this.authStatus);
         this.saveAuthInfo();
-        this.router.navigate([URL.HOME_PAGE]);
+        this.usernamePrefixListener.next(this.usernamePrefix);
+        this.router.navigate([`user/${this.usernamePrefix}`]);
       });
   }
 
@@ -53,6 +57,14 @@ export class AuthService {
 
   getAuthTokenListener() {
     return this.authTokenListener.asObservable();
+  }
+
+  getUsernamePrefixListener() {
+    return this.usernamePrefixListener.asObservable();
+  }
+
+  getUsernamePrefix() {
+    return this.usernamePrefix;
   }
 
   getAuthorizationToken() {
@@ -66,6 +78,7 @@ export class AuthService {
   logout() {
     this.userId = null;
     this.token = '';
+    this.usernamePrefix = '';
     this.authStatus = false;
     this.authTokenListener.next(this.authStatus);
     this.clearAuthInfo();
@@ -78,6 +91,7 @@ export class AuthService {
       return;
     }
     this.userId = localStorage.getItem('userId');
+    this.usernamePrefix = localStorage.getItem('usernamePrefix');
     this.authStatus = true;
     this.authTokenListener.next(this.authStatus);
   }
@@ -85,11 +99,13 @@ export class AuthService {
   private saveAuthInfo() {
     localStorage.setItem('token', this.token);
     localStorage.setItem('userId', this.userId);
+    localStorage.setItem('usernamePrefix', this.usernamePrefix);
   }
 
   private clearAuthInfo() {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
+    localStorage.removeItem('usernamePrefix');
   }
 
   private buildLoginData(username: string, password: string): LoginModel {

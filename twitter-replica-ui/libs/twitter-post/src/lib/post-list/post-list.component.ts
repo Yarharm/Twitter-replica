@@ -1,6 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
-import { PostModel, PostService, AuthService } from 'libs/twitter-core/src';
+import {
+  PostModel,
+  PostService,
+  AuthService,
+  UserService,
+  UserModel,
+} from 'libs/twitter-core/src';
 import { Subscription, throwError } from 'rxjs';
 
 @Component({
@@ -11,7 +18,9 @@ import { Subscription, throwError } from 'rxjs';
 export class TwitterPostListComponent implements OnInit, OnDestroy {
   constructor(
     private readonly postService: PostService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+    private readonly route: ActivatedRoute
   ) {}
   posts: PostModel[] = [];
   expandPosts = false;
@@ -21,21 +30,36 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
   pageSizeOptions = [1, 2, 5, 10];
   authStatus = false;
   userId: string;
+  currentUser: UserModel;
+  usernamePrefix: string;
   private authTokenSubs = new Subscription();
   private postsSubs: Subscription;
   private totalPostsCountSubs: Subscription;
+  private currentUserSubs = new Subscription();
 
   ngOnInit(): void {
-    this.postService.getPosts(this.pageSize, this.currentPage);
+    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+      this.usernamePrefix = paramMap.get('username');
+      this.postService.getPosts(
+        this.usernamePrefix,
+        this.pageSize,
+        this.currentPage
+      );
+    });
+    // Posts
     this.postsSubs = this.postService.getPostUpdateListener().subscribe(
       (receivedPosts: PostModel[]) => (this.posts = receivedPosts),
       () => throwError(new Error('Could not fetch created posts!'))
     );
+
+    // Total posts subs
     this.totalPostsCountSubs = this.postService
       .getTotalPostsListener()
       .subscribe((totalPostsCount: number) => {
         this.postTotalCount = totalPostsCount;
       });
+
+    // Auth
     this.authStatus = this.authService.getAuthStatus();
     this.userId = this.authService.getUserId();
     this.authTokenSubs = this.authService
@@ -44,12 +68,22 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
         this.authStatus = hasAuthToken;
         this.userId = this.authService.getUserId();
       });
+    this.currentUser = this.userService.getCurrentUser();
+
+    // Current user
+    this.currentUserSubs = this.userService
+      .getCurrentUserListener()
+      .subscribe((user: UserModel) => (this.currentUser = user));
   }
 
   onChangePostPagination(paginationEvent: PageEvent) {
     this.pageSize = paginationEvent.pageSize;
     this.currentPage = paginationEvent.pageIndex;
-    this.postService.getPosts(this.pageSize, this.currentPage);
+    this.postService.getPosts(
+      this.usernamePrefix,
+      this.pageSize,
+      this.currentPage
+    );
   }
 
   deletePost(postId: string) {
@@ -61,7 +95,11 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
             ? this.currentPage
             : this.currentPage - 1;
 
-        this.postService.getPosts(this.pageSize, page >= 0 ? page : 0);
+        this.postService.getPosts(
+          this.usernamePrefix,
+          this.pageSize,
+          page >= 0 ? page : 0
+        );
       });
   }
 
@@ -69,5 +107,6 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
     this.postsSubs.unsubscribe();
     this.totalPostsCountSubs.unsubscribe();
     this.authTokenSubs.unsubscribe();
+    this.currentUserSubs.unsubscribe();
   }
 }

@@ -3,12 +3,15 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { TwitterLoginRoutes, TwitterSignupRoutes } from '@twitter-replica/auth';
 import { TwitterPostRoutes } from '@twitter-replica/post';
+import { TwitterUserRoutes } from '@twitter-replica/user';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'post' },
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', children: TwitterLoginRoutes },
   { path: 'signup', children: TwitterSignupRoutes },
-  { path: 'post', children: TwitterPostRoutes },
+  { path: 'user/:username', children: TwitterUserRoutes },
+  { path: 'user/:username/post', children: TwitterPostRoutes },
+  // { path: '**', component:  USER DOES NOT EXISTS COMPONENT },
 ];
 
 @NgModule({

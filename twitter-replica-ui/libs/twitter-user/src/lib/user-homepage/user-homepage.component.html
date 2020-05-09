@@ -1,0 +1,30 @@
+<mat-card class="banner-card">
+  <img
+    class="cover-image"
+    mat-card-image
+    [src]="currentUser.coverImage"
+    alt="No cover image available"
+  />
+  <mat-card-header>
+    <div mat-card-avatar class="avatar">
+      <img
+        class="avatar"
+        mat-card-avatar
+        [src]="currentUser.avatar"
+        alt="No avatar image available"
+      />
+    </div>
+    <span class="fill-remaining-space"></span>
+    <div>
+      <button mat-stroked-button color="primary">Set up profile</button>
+    </div>
+    <mat-card-title>{{ currentUser.name }} </mat-card-title>
+    <mat-card-subtitle>{{ currentUser.username }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      {{ currentUser.bio }}
+    </p>
+  </mat-card-content>
+</mat-card>
+<twitter-post-list></twitter-post-list>
