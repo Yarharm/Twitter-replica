@@ -86,7 +86,10 @@ export class PostService {
   }
 
   getPost(postId: string) {
-    return { ...this.posts.get(postId) };
+    const usernamePrefix = this.authService.getUsernamePrefix();
+    return this.httpClient.get<BackendPostModel>(
+      `${URL.GET_USER}${usernamePrefix}${URL.GET_POST}${postId}`
+    );
   }
 
   updatePost(id: string, content: string, media: File | string) {

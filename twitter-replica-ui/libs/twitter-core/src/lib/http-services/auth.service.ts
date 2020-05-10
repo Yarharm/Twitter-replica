@@ -31,7 +31,13 @@ export class AuthService {
 
     this.httpClient
       .post<SignupResponseModel>(URL.AUTH_SIGNUP, userInfo)
-      .subscribe(() => this.loginUser(username, password));
+      .subscribe(
+        () => this.loginUser(username, password),
+        () => {
+          this.authStatus = false;
+          this.authTokenListener.next(this.authStatus);
+        }
+      );
   }
 
   loginUser(username: string, password: string) {

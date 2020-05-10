@@ -15,6 +15,7 @@ export namespace URL {
   export const GET_USER = `${API}/user/`;
 
   // POSTS
+  export const GET_POST = `/posts/`;
   export const GET_POSTS = `/posts`;
   export const CREATE_POST = `/posts`;
   export const DELETE_POST = `/posts/`;

@@ -8,24 +8,42 @@ const auth = require('../auth');
 const Post = mongoose.model('Post');
 
 router.get(
+  '/:postId',
+  asyncHandler(async (req, res) => {
+    try {
+      const result = await Post.findById(req.params.postId);
+      res.json(result).send();
+    } catch (err) {
+      res.status(500).json({ message: 'Could not find post' }).send();
+    }
+  })
+);
+
+router.get(
   '/',
   asyncHandler(async (req, res) => {
     const pageSize = +req.query.pageSize;
     const currentPage = +req.query.currentPage;
     let posts;
-    if (pageSize && typeof currentPage !== 'undefined') {
-      posts = await Post.find({
-        creatorUsernamePrefix: req.params.usernamePrefix,
-      })
-        .skip(pageSize * currentPage)
-        .limit(pageSize);
-    } else {
-      posts = await Post.find({
+    try {
+      if (pageSize && typeof currentPage !== 'undefined') {
+        posts = await Post.find({
+          creatorUsernamePrefix: req.params.usernamePrefix,
+        })
+          .skip(pageSize * currentPage)
+          .limit(pageSize);
+      } else {
+        posts = await Post.find({
+          creatorUsernamePrefix: req.params.usernamePrefix,
+        });
+      }
+      const postCount = await Post.countDocuments({
         creatorUsernamePrefix: req.params.usernamePrefix,
       });
+      res.json({ posts, totalPostsCount: postCount }).send();
+    } catch (err) {
+      res.status(500).json({ message: 'Could not fetch posts' }).send();
     }
-    const totalPosts = await Post.estimatedDocumentCount();
-    res.json({ posts, totalPostsCount: totalPosts }).send();
   })
 );
 
@@ -41,8 +59,12 @@ router.post(
       creatorId: req.userData.id,
       creatorUsernamePrefix: req.userData.usernamePrefix,
     });
-    const ret = await post.save();
-    res.json(ret).send();
+    try {
+      const ret = await post.save();
+      res.json(ret).send();
+    } catch (err) {
+      res.status(500).json({ message: 'Could not add post' }).send();
+    }
   })
 );
 
@@ -66,14 +88,18 @@ router.put(
       creatorUsernamePrefix: req.userData.usernamePrefix,
     });
 
-    const result = await Post.updateOne(
-      { _id: req.params.postId, creatorId: req.userData.id },
-      post
-    );
-    if (result.nModified <= 0) {
-      res.status(401).send();
+    try {
+      const result = await Post.updateOne(
+        { _id: req.params.postId, creatorId: req.userData.id },
+        post
+      );
+      if (result.nModified <= 0) {
+        res.status(401).json({ message: 'Not authorized' }).send();
+      }
+      res.json(post).send();
+    } catch (err) {
+      res.status(500).json({ message: 'Could not update post' }).send();
     }
-    res.json(post).send();
   })
 );
 
@@ -81,16 +107,20 @@ router.delete(
   '/:postId',
   auth,
   asyncHandler(async (req, res) => {
-    const result = await Post.deleteOne({
-      _id: req.params.postId,
-      creatorId: req.userData.id,
-    });
-    if (result.n <= 0) {
-      res.status(401).send();
-    }
+    try {
+      const result = await Post.deleteOne({
+        _id: req.params.postId,
+        creatorId: req.userData.id,
+      });
+      if (result.n <= 0) {
+        res.status(401).json({ message: 'Not authorized' }).send();
+      }
 
-    const totalPosts = await Post.estimatedDocumentCount();
-    res.json({ totalPosts }).send();
+      const totalPosts = await Post.estimatedDocumentCount();
+      res.json({ totalPosts }).send();
+    } catch (err) {
+      res.status(401).json({ message: 'Could not remove post' }).send();
+    }
   })
 );
 
