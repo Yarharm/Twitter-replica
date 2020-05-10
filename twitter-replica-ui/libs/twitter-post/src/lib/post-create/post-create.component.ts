@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
   PostService,
-  PostModel,
+  BackendPostModel,
   mimeTypeValidator,
 } from 'libs/twitter-core/src';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -19,7 +19,6 @@ export class TwitterPostCreateComponent implements OnInit {
   ) {}
 
   content: string;
-  currentPost: PostModel;
   form: FormGroup;
   imageURL: string;
   expandEmpojiBar = false;
@@ -41,11 +40,14 @@ export class TwitterPostCreateComponent implements OnInit {
       if (paramMap.has('postId')) {
         this.createMode = false;
         this.postId = paramMap.get('postId');
-        this.currentPost = this.postService.getPost(this.postId);
-        this.form.patchValue({
-          content: this.currentPost.content,
-          media: this.currentPost.mediaPath,
-        });
+        this.postService
+          .getPost(this.postId)
+          .subscribe((currentPost: BackendPostModel) => {
+            this.form.patchValue({
+              content: currentPost.content,
+              media: currentPost.mediaPath,
+            });
+          });
       } else {
         this.createMode = true;
         this.postId = null;
