@@ -1,32 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
-import { HeaderComponent } from './header/header.component';
-import { TwitterDialogErrorComponent } from './dialog-error/dialog-error.component';
+import { MaterialModule } from '../../../material.module';
 import { httpInterceptorProviders } from './http-interceptors';
 import { AuthGuard } from './http-guards';
+import { HeaderComponent } from './header/header.component';
+import { TwitterDialogErrorComponent } from './dialog-error/dialog-error.component';
 
 @NgModule({
   declarations: [HeaderComponent, TwitterDialogErrorComponent],
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatToolbarModule,
-    HttpClientModule,
-    MatButtonModule,
-    MatDialogModule,
-  ],
+  imports: [CommonModule, RouterModule, MaterialModule, HttpClientModule],
   providers: [httpInterceptorProviders, AuthGuard],
   entryComponents: [TwitterDialogErrorComponent],
-  exports: [
-    MatToolbarModule,
-    HeaderComponent,
-    HttpClientModule,
-    MatDialogModule,
-  ],
+  exports: [HeaderComponent],
 })
 export class TwitterCoreModule {}

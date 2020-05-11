@@ -1,4 +1,5 @@
 const multer = require('multer');
+
 const properties = require('../properties');
 
 const { mediaPath } = properties;
@@ -25,6 +26,4 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage }).single('media');
-
-module.exports = upload;
+module.exports = storage;
