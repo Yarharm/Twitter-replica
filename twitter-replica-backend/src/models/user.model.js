@@ -12,6 +12,21 @@ const userSchema = new mongoose.Schema({
 
 userSchema.plugin(uniqueValidator, { message: 'is already taken.' });
 
+// Statics
+userSchema.statics.generateUsernamePrefix = async function usernamePrefix(
+  username
+) {
+  const atSign = '@';
+  if (username.includes(atSign)) {
+    const currPrefix = username.split(atSign)[0];
+    let prefixCount = await this.countDocuments({ username: currPrefix });
+    prefixCount = prefixCount === 0 ? '' : prefixCount;
+    return `${currPrefix}${prefixCount}`;
+  }
+  return username;
+};
+
+// Methods
 userSchema.methods.generateJWT = function generateJWT() {
   return jwt.sign(
     {

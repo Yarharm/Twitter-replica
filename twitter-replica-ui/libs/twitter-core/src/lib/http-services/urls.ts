@@ -1,7 +1,8 @@
+import { environment } from '../../../../../apps/twitter-replica/src/environments/environment';
 // tslint:disable-next-line: no-namespace
 export namespace URL {
   // BASIC
-  const BACKEND_DOMAIN = 'http://localhost:3333';
+  const BACKEND_DOMAIN = environment.backendDomain;
   const API = `${BACKEND_DOMAIN}/api`;
   export const HOME_PAGE = '/';
 
