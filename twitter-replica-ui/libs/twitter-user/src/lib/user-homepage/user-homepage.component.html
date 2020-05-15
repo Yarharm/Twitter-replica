@@ -15,16 +15,20 @@
       />
     </div>
     <span class="fill-remaining-space"></span>
-    <div>
-      <button mat-stroked-button color="primary">Set up profile</button>
+    <div *ngIf="authStatus && userId == currentUser.id">
+      <button mat-stroked-button color="primary" (click)="onSetupProfile()">
+        Set up profile
+      </button>
     </div>
     <mat-card-title>{{ currentUser.name }} </mat-card-title>
-    <mat-card-subtitle>{{ currentUser.username }}</mat-card-subtitle>
+    <mat-card-subtitle>@{{ currentUser.username }}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <p>
-      {{ currentUser.bio }}
-    </p>
+    <div>
+      <p>
+        {{ currentUser.bio }}
+      </p>
+    </div>
   </mat-card-content>
 </mat-card>
 <twitter-post-list></twitter-post-list>

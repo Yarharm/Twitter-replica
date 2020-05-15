@@ -1,13 +1,17 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const uniqueValidator = require('mongoose-unique-validator');
-const authConfig = require('../configs/authConfig');
+const authConfig = require('../configs/auth.config');
 
 const userSchema = new mongoose.Schema({
   email: { type: String, require: true, unique: true },
-  username: { type: String, require: true, unique: true },
   usernamePrefix: { type: String, require: true, unique: true },
   password: { type: String, require: true },
+  username: { type: String, require: true, unique: true },
+  name: { type: String, require: true },
+  bio: { type: String },
+  avatar: { type: String, require: true },
+  coverImage: { type: String, require: true },
 });
 
 userSchema.plugin(uniqueValidator, { message: 'is already taken.' });

@@ -1,0 +1,17 @@
+.profile-update {
+  height: '600px';
+  width: '500px';
+}
+
+.profile-media-preview {
+  height: 5rem;
+  margin: 1rev 0;
+}
+
+.profile-media-preview img {
+  height: 100%;
+}
+
+input[type='file'] {
+  visibility: hidden;
+}

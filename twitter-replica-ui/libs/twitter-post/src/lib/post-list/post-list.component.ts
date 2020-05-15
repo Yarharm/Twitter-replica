@@ -30,14 +30,23 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
   pageSizeOptions = [1, 2, 5, 10];
   authStatus = false;
   userId: string;
-  currentUser: UserModel;
+  currentUser: any;
   usernamePrefix: string;
   private authTokenSubs = new Subscription();
   private postsSubs: Subscription;
   private totalPostsCountSubs: Subscription;
-  private currentUserSubs = new Subscription();
+  private currentUserSubs: Subscription;
 
   ngOnInit(): void {
+    // User
+    this.currentUser = this.userService.getCurrentUser();
+    this.currentUserSubs = this.userService
+      .getCurrentUserListener()
+      .subscribe((user: UserModel) => {
+        this.currentUser = user;
+      });
+
+    // Active route
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       this.usernamePrefix = paramMap.get('username');
       this.postService.getPosts(
@@ -46,6 +55,7 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
         this.currentPage
       );
     });
+
     // Posts
     this.postsSubs = this.postService.getPostUpdateListener().subscribe(
       (receivedPosts: PostModel[]) => (this.posts = receivedPosts),
@@ -68,12 +78,6 @@ export class TwitterPostListComponent implements OnInit, OnDestroy {
         this.authStatus = hasAuthToken;
         this.userId = this.authService.getUserId();
       });
-    this.currentUser = this.userService.getCurrentUser();
-
-    // Current user
-    this.currentUserSubs = this.userService
-      .getCurrentUserListener()
-      .subscribe((user: UserModel) => (this.currentUser = user));
   }
 
   onChangePostPagination(paginationEvent: PageEvent) {
