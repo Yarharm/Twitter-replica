@@ -1,0 +1,65 @@
+<form class="profile-update" [formGroup]="formData">
+  <h1 mat-dialog-title>Update profile</h1>
+  <div mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <div>
+      <mat-form-field>
+        <mat-label>Bio</mat-label>
+        <input matInput formControlName="bio" />
+      </mat-form-field>
+    </div>
+    <div>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="avatarFileChooser.click()"
+      >
+        Choose Avatar
+      </button>
+
+      <input
+        type="file"
+        accept="image/*"
+        #avatarFileChooser
+        (change)="onAvatarImageSelected($event)"
+      />
+    </div>
+    <div class="profile-media-preview" *ngIf="formData.get('avatar').value">
+      <img
+        [src]="avatarImageURL || formData.get('avatar').value"
+        alt="No avatar image available"
+      />
+    </div>
+    <div>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="coverImageChooser.click()"
+      >
+        Choose cover image
+      </button>
+
+      <input
+        type="file"
+        accept="image/*"
+        #coverImageChooser
+        (change)="onCoverImageSelected($event)"
+      />
+    </div>
+    <div class="profile-media-preview" *ngIf="formData.get('coverImage').value">
+      <img
+        [src]="coverImageURL || formData.get('coverImage').value"
+        alt="No cover image available"
+      />
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button [mat-dialog-close]="formData" cdkFocusInitial>
+      Update
+    </button>
+  </div>
+</form>

@@ -1,5 +1,5 @@
 const router = require('express').Router({ mergeParams: true });
-const uploadImage = require('../../middleware/mediaUpload');
+const mediaUpload = require('../../middleware/media-upload');
 const auth = require('../../middleware/auth');
 const controllerFacade = require('../../controllers');
 
@@ -7,12 +7,17 @@ router.get('/:postId', controllerFacade.postController.getPost);
 
 router.get('/', controllerFacade.postController.getPosts);
 
-router.post('/', auth, uploadImage, controllerFacade.postController.createPost);
+router.post(
+  '/',
+  auth,
+  mediaUpload.uploadPost,
+  controllerFacade.postController.createPost
+);
 
 router.put(
   '/:postId',
   auth,
-  uploadImage,
+  mediaUpload.uploadPost,
   controllerFacade.postController.updatePost
 );
 
