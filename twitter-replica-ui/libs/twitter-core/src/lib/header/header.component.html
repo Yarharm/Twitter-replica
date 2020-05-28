@@ -1,5 +1,9 @@
 <mat-toolbar color="primary">
-  <span><a [routerLink]="['/user', usernamePrefix]">Homepage</a></span>
+  <span
+    ><a *ngIf="authStatus" [routerLink]="['/user', usernamePrefix]"
+      >Homepage</a
+    ></span
+  >
   <span *ngIf="authStatus"
     ><a
       mat-button
