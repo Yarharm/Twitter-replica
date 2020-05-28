@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "env NODE_ENV=production node ./src/main.js",
+    "start": "node ./src/main.js",
+    "start:app": "env NODE_ENV=production node ./src/main.js",
     "start:app:dev": "nodemon ./src/main.js",
+    "test": "mocha --timeout 15000 test/features/**/*.js",
+    "ci": "server-test 3333",
     "lint": "eslint '**/*.js'",
     "lint:fix": "eslint --fix '**/*.js'"
   },
@@ -27,8 +30,12 @@
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.2",
+    "mocha": "7.2.0",
     "nodemon": "^2.0.2",
-    "prettier": "^2.0.2"
+    "prettier": "^2.0.2",
+    "should": "13.2.3",
+    "start-server-and-test": "1.11.0",
+    "supertest": "4.0.2"
   },
   "engines": {
     "node": "10.16.0"

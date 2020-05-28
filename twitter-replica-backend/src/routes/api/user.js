@@ -16,4 +16,6 @@ router.put(
   controllerFacade.userController.updateUser
 );
 
+router.get('/', controllerFacade.userController.healthCheck);
+
 module.exports = router;

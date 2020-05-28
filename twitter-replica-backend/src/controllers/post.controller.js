@@ -39,7 +39,7 @@ exports.getPosts = asyncHandler(async (req, res) => {
 });
 
 exports.createPost = asyncHandler(async (req, res) => {
-  const url = `${req.protocol}://${req.get('host')}`;
+  const url = properties.generateUrl(req);
   const post = new Post({
     content: req.body.content,
     mediaPath: url + properties.mediaPath + req.file.filename,
@@ -58,7 +58,7 @@ exports.updatePost = asyncHandler(async (req, res) => {
   let currentMedia = req.body.mediaPath;
 
   if (req.file) {
-    const url = `${req.protocol}://${req.get('host')}`;
+    const url = properties.generateUrl(req);
     currentMedia = url + properties.mediaPath + req.file.filename;
   }
 
