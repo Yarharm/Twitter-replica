@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import { TwitterCoreRoutes } from '@twitter-replica/core';
 import { TwitterLoginRoutes, TwitterSignupRoutes } from '@twitter-replica/auth';
 import { TwitterPostRoutes } from '@twitter-replica/post';
 import { TwitterUserRoutes } from '@twitter-replica/user';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: '', pathMatch: 'full', children: TwitterCoreRoutes },
   { path: 'login', children: TwitterLoginRoutes },
   { path: 'signup', children: TwitterSignupRoutes },
   { path: 'user/:username', children: TwitterUserRoutes },
