@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "node ./src/main.js",
-    "start:app": "env NODE_ENV=production node ./src/main.js",
+    "start": "env NODE_ENV=production node ./src/main.js",
+    "start:app": "node ./src/main.js",
     "start:app:dev": "nodemon ./src/main.js",
     "test": "mocha --timeout 15000 test/features/**/*.js",
     "ci": "server-test 3333",
