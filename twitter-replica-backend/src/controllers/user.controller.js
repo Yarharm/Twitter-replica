@@ -29,8 +29,11 @@ exports.loginUser = asyncHandler(async (req, res) => {
 
 exports.createUser = asyncHandler(async (req, res) => {
   try {
+    const url = properties.generateUrl(req);
+    const mediaPath = `${url}${properties.mediaPath}`;
     const hashPass = await bcrypt.hash(req.body.password, saltRounds);
     const usernamePrefix = await User.generateUsernamePrefix(req.body.username);
+
     const user = new User({
       email: req.body.email,
       username: req.body.username,
@@ -38,9 +41,10 @@ exports.createUser = asyncHandler(async (req, res) => {
       password: hashPass,
       name: defaultUser.name,
       bio: defaultUser.bio,
-      avatar: defaultUser.avatar,
-      coverImage: defaultUser.coverImage,
+      avatar: `${mediaPath}${defaultUser.avatar}`,
+      coverImage: `${mediaPath}${defaultUser.coverImage}`,
     });
+
     const result = await user.save();
     return res.json(result).send();
   } catch (err) {
@@ -102,4 +106,8 @@ exports.updateUser = asyncHandler(async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Could not update user' }).send();
   }
+});
+
+exports.healthCheck = asyncHandler(async (_, res) => {
+  res.status(200).send('HEALTH:OK');
 });

@@ -13,7 +13,8 @@ const properties = require('./properties');
 async function bootstrap() {
   const isProduction = process.env.NODE_ENV === 'production';
 
-  const app = express();
+  const app = (module.exports = express());
+
   const port = process.env.PORT || 3333;
   app.use(cors());
   app.use(bodyParser.json());
@@ -42,7 +43,10 @@ async function bootstrap() {
   app.use(routes);
 
   // Start development server
-  app.listen(port, () => console.log(`Listening on http://localhost:${port}`));
+  server = app.listen(port, () => {
+    console.log(`Listening on http://localhost:${port}`);
+    app.emit('appStarted');
+  });
 }
 
 bootstrap();
