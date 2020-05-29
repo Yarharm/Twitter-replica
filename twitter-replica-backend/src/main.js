@@ -25,7 +25,7 @@ async function bootstrap() {
 
   // Connect to mongoDB
   if (isProduction) {
-    await mongoose.connect(process.env.DB_URI_PROD, mongoConfig);
+    await mongoose.connect(process.env.DATABASE_URL, mongoConfig);
   } else {
     try {
       await mongoose.connect(process.env.DB_URI_DEV, mongoConfig);
