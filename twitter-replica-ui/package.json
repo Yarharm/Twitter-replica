@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:app:prod": "http-server dist/apps/twitter-replica",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
