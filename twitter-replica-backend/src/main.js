@@ -28,7 +28,7 @@ async function bootstrap() {
     await mongoose.connect(process.env.DATABASE_URL, mongoConfig);
   } else {
     try {
-      await mongoose.connect(process.env.DB_URI_DEV, mongoConfig);
+      await mongoose.connect(process.env.DATABASE_URL, mongoConfig);
       mongoose.set('debug', true);
       console.log('Connected to DB');
     } catch (err) {
