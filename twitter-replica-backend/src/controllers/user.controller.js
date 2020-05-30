@@ -7,14 +7,17 @@ const defaultUser = require('../configs/default-user.config');
 const saltRounds = 10;
 
 exports.loginUser = asyncHandler(async (req, res) => {
+  let msg = 'Invalid cred';
   try {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
+      msg = 'NO USER WAS FOUND';
       throw new Error();
     }
 
     const correctPass = await bcrypt.compare(req.body.password, user.password);
     if (!correctPass) {
+      msg = 'PASSWORD IS WRONG';
       throw new Error();
     }
 
@@ -23,7 +26,7 @@ exports.loginUser = asyncHandler(async (req, res) => {
       .json({ token, userId: user._id, usernamePrefix: user.usernamePrefix })
       .send();
   } catch (err) {
-    return res.status(500).json({ message: 'Invalid credentials' }).send();
+    return res.status(500).json({ message: msg }).send();
   }
 });
 
