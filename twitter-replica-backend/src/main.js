@@ -26,7 +26,6 @@ async function bootstrap() {
   // Connect to mongoDB
   if (isProduction) {
     await mongoose.connect(process.env.DATABASE_URL, mongoConfig);
-    mongoose.set('debug', true);
   } else {
     try {
       await mongoose.connect(process.env.DATABASE_URL, mongoConfig);
@@ -44,9 +43,8 @@ async function bootstrap() {
   app.use(routes);
 
   // Start development server
-  server = app.listen(port, () => {
+  app.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`);
-    app.emit('appStarted');
   });
 }
 

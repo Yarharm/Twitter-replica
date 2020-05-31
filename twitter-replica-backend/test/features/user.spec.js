@@ -1,7 +1,8 @@
-const app = require('../../src/main');
 const request = require('supertest');
 const should = require('should/as-function');
 const mongoose = require('mongoose');
+const app = require('../../src/main');
+
 const User = mongoose.model('User');
 const agent = request.agent(app);
 const fixtures = require('../fixtures/index');
@@ -34,12 +35,12 @@ describe('User routes test', async () => {
         });
     });
 
-    it('Expect user to not exist', (done) => {
+    it('Expect to get a `does not exist` user', (done) => {
       agent
         .get('/api/user/unknownUser')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
-        .expect(500, done);
+        .expect(200, done);
     });
   });
 

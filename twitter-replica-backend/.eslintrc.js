@@ -2,6 +2,7 @@ module.exports = {
   env: {
     es6: true,
     node: true,
+    mocha: true,
   },
   extends: ['airbnb-base', 'prettier'],
   plugins: ['prettier'],
@@ -21,5 +22,6 @@ module.exports = {
     camelcase: 'off',
     'no-underscore-dangle': 0,
     'no-unused-vars': ['error', { argsIgnorePattern: 'next' }],
+    'no-multi-assign': 'off',
   },
 };
