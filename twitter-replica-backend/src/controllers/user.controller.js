@@ -31,8 +31,6 @@ exports.loginUser = asyncHandler(async (req, res) => {
 
 exports.createUser = asyncHandler(async (req, res) => {
   try {
-    const url = properties.generateUrl(req);
-    const mediaPath = `${url}${properties.mediaPath}`;
     const hashPass = await bcrypt.hash(req.body.password, saltRounds);
     const usernamePrefix = await User.generateUsernamePrefix(req.body.username);
 
@@ -43,8 +41,8 @@ exports.createUser = asyncHandler(async (req, res) => {
       password: hashPass,
       name: userFacade.defaultUser.name,
       bio: userFacade.defaultUser.bio,
-      avatar: `${mediaPath}${userFacade.defaultUser.avatar}`,
-      coverImage: `${mediaPath}${userFacade.defaultUser.coverImage}`,
+      avatar: `${properties.mediaPath}${userFacade.defaultUser.avatar}`,
+      coverImage: `${properties.mediaPath}${userFacade.defaultUser.coverImage}`,
     });
 
     const result = await user.save();
@@ -55,8 +53,6 @@ exports.createUser = asyncHandler(async (req, res) => {
 });
 
 exports.getUser = asyncHandler(async (req, res) => {
-  const url = properties.generateUrl(req);
-  const mediaPath = `${url}${properties.mediaPath}`;
   try {
     const result = await User.findOne({
       usernamePrefix: req.params.usernamePrefix,
@@ -75,8 +71,8 @@ exports.getUser = asyncHandler(async (req, res) => {
     res
       .json({
         id: userFacade.unknownUser.id,
-        coverImage: `${mediaPath}${userFacade.unknownUser.coverImage}`,
-        avatar: `${mediaPath}${userFacade.unknownUser.avatar}`,
+        coverImage: `${properties.mediaPath}${userFacade.unknownUser.coverImage}`,
+        avatar: `${properties.mediaPath}${userFacade.unknownUser.avatar}`,
         bio: userFacade.unknownUser.bio,
         name: userFacade.unknownUser.name,
         username: req.params.usernamePrefix,
@@ -88,14 +84,11 @@ exports.getUser = asyncHandler(async (req, res) => {
 exports.updateUser = asyncHandler(async (req, res) => {
   let avatarImage = req.body.avatar;
   let { coverImage } = req.body;
-  const url = `${req.protocol}://${req.get('host')}`;
 
   if (req.files) {
-    avatarImage = req.files.avatar
-      ? url + properties.mediaPath + req.files.avatar[0].filename
-      : avatarImage;
+    avatarImage = req.files.avatar ? req.files.avatar[0].location : avatarImage;
     coverImage = req.files.coverImage
-      ? url + properties.mediaPath + req.files.coverImage[0].filename
+      ? req.files.coverImage[0].location
       : coverImage;
   }
 

@@ -6,10 +6,6 @@
 # Media
 /media/*
 
-# Media for the default user
-!/media/unknown_background.jpg
-!/media/unknown_user.png
-
 # compiled output
 /dist
 /tmp
