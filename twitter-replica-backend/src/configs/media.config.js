@@ -1,28 +1,16 @@
-const multer = require('multer');
-
+const s3 = require('./aws.config');
+const multerS3 = require('multer-s3');
 const properties = require('../properties');
 
-const { mediaPath } = properties;
-
-const MIME_TYPE_MAP = {
-  'image/png': 'png',
-  'image/jpeg': 'jpg',
-  'image/jpg': 'jpg',
-};
-
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    const isValid = MIME_TYPE_MAP[file.mimetype];
-    let error = new Error('Invalid mime type');
-    if (isValid) {
-      error = null;
-    }
-    cb(error, mediaPath);
+const storage = multerS3({
+  s3: s3,
+  acl: process.env.AWS_BUCKET_POLICY,
+  bucket: process.env.S3_BUCKET,
+  metadata: function (req, file, cb) {
+    cb(null, { fieldName: file.fieldname });
   },
-  filename(req, file, cb) {
-    const name = file.originalname.toLowerCase().split(' ').join('-');
-    const ext = MIME_TYPE_MAP[file.mimetype];
-    cb(null, `${name}-${Date.now()}.${ext}`);
+  key: function (req, file, cb) {
+    cb(null, properties.mediaFileName(file));
   },
 });
 

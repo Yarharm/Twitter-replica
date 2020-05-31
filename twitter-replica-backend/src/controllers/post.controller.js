@@ -39,13 +39,13 @@ exports.getPosts = asyncHandler(async (req, res) => {
 });
 
 exports.createPost = asyncHandler(async (req, res) => {
-  const url = properties.generateUrl(req);
   const post = new Post({
     content: req.body.content,
-    mediaPath: url + properties.mediaPath + req.file.filename,
+    mediaPath: req.file.location,
     creatorId: req.userData.id,
     creatorUsernamePrefix: req.userData.usernamePrefix,
   });
+  console.log('POST MEDIA PATH ', post.mediaPath);
   try {
     const ret = await post.save();
     res.json(ret).send();
@@ -55,12 +55,7 @@ exports.createPost = asyncHandler(async (req, res) => {
 });
 
 exports.updatePost = asyncHandler(async (req, res) => {
-  let currentMedia = req.body.mediaPath;
-
-  if (req.file) {
-    const url = properties.generateUrl(req);
-    currentMedia = url + properties.mediaPath + req.file.filename;
-  }
+  const currentMedia = req.file ? req.file.location : req.body.mediaPath;
 
   const post = new Post({
     _id: req.body.id,
