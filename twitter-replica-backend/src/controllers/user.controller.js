@@ -2,22 +2,21 @@ const asyncHandler = require('express-async-handler');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const properties = require('../properties');
+
 const User = mongoose.model('User');
-const defaultUser = require('../configs/default-user.config');
+const userFacade = require('../configs/user.config');
+
 const saltRounds = 10;
 
 exports.loginUser = asyncHandler(async (req, res) => {
-  let msg = 'Invalid cred';
   try {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
-      msg = 'NO USER WAS FOUND';
       throw new Error();
     }
 
     const correctPass = await bcrypt.compare(req.body.password, user.password);
     if (!correctPass) {
-      msg = 'PASSWORD IS WRONG';
       throw new Error();
     }
 
@@ -26,7 +25,7 @@ exports.loginUser = asyncHandler(async (req, res) => {
       .json({ token, userId: user._id, usernamePrefix: user.usernamePrefix })
       .send();
   } catch (err) {
-    return res.status(500).json({ message: msg }).send();
+    return res.status(500).json({ message: 'Invalid credentials' }).send();
   }
 });
 
@@ -42,10 +41,10 @@ exports.createUser = asyncHandler(async (req, res) => {
       username: req.body.username,
       usernamePrefix,
       password: hashPass,
-      name: defaultUser.name,
-      bio: defaultUser.bio,
-      avatar: `${mediaPath}${defaultUser.avatar}`,
-      coverImage: `${mediaPath}${defaultUser.coverImage}`,
+      name: userFacade.defaultUser.name,
+      bio: userFacade.defaultUser.bio,
+      avatar: `${mediaPath}${userFacade.defaultUser.avatar}`,
+      coverImage: `${mediaPath}${userFacade.defaultUser.coverImage}`,
     });
 
     const result = await user.save();
@@ -56,6 +55,8 @@ exports.createUser = asyncHandler(async (req, res) => {
 });
 
 exports.getUser = asyncHandler(async (req, res) => {
+  const url = properties.generateUrl(req);
+  const mediaPath = `${url}${properties.mediaPath}`;
   try {
     const result = await User.findOne({
       usernamePrefix: req.params.usernamePrefix,
@@ -71,21 +72,30 @@ exports.getUser = asyncHandler(async (req, res) => {
       })
       .send();
   } catch (err) {
-    res.status(500).json({ message: 'Could not find user information' }).send();
+    res
+      .json({
+        id: userFacade.unknownUser.id,
+        coverImage: `${mediaPath}${userFacade.unknownUser.coverImage}`,
+        avatar: `${mediaPath}${userFacade.unknownUser.avatar}`,
+        bio: userFacade.unknownUser.bio,
+        name: userFacade.unknownUser.name,
+        username: req.params.usernamePrefix,
+      })
+      .send();
   }
 });
 
 exports.updateUser = asyncHandler(async (req, res) => {
   let avatarImage = req.body.avatar;
-  let coverImage = req.body.coverImage;
+  let { coverImage } = req.body;
   const url = `${req.protocol}://${req.get('host')}`;
 
   if (req.files) {
-    avatarImage = req.files['avatar']
-      ? url + properties.mediaPath + req.files['avatar'][0].filename
+    avatarImage = req.files.avatar
+      ? url + properties.mediaPath + req.files.avatar[0].filename
       : avatarImage;
-    coverImage = req.files['coverImage']
-      ? url + properties.mediaPath + req.files['coverImage'][0].filename
+    coverImage = req.files.coverImage
+      ? url + properties.mediaPath + req.files.coverImage[0].filename
       : coverImage;
   }
 
@@ -94,7 +104,7 @@ exports.updateUser = asyncHandler(async (req, res) => {
     name: req.body.name,
     bio: req.body.bio,
     avatar: avatarImage,
-    coverImage: coverImage,
+    coverImage,
   });
 
   try {

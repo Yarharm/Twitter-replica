@@ -36,3 +36,4 @@ The frontend is at [http://localhost:4200/](http://localhost:4200/) and the back
 ### Work in progress
 
 - Background worker for automatic deletion of unused media files
+- Integrate a [Husky](https://github.com/typicode/husky) pre-commit hook to run linting, testing and code coverage before the commits.
