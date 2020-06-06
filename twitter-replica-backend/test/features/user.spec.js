@@ -61,7 +61,7 @@ describe('User routes test', async () => {
         .expect(201);
     });
 
-    it('Expect 500 if the user is already exists', async () => {
+    it('Expect 500 if the user already exists', async () => {
       agent
         .post('/api/signup')
         .send({
