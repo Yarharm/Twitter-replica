@@ -11,13 +11,20 @@ To get the Node server running locally:
 - Create `.env` file with defined:
 - - DATABASE_URL - connection to your mongodb.
 - - AUTH_SECRET_DEV - secret string for authentication.
+- The following `.env` properties are required for the object store.
+- - AWS_ACCESS_KEY_ID
+- - AWS_BUCKET_POLICY
+- - AWS_DOMAIN
+- - AWS_SECRET_ACCESS_KEY
+- - AWS_SESSION_TOKEN
+- - S3_BUCKET
 - `npm run start:app:dev` to start the local development server.
 
 ## Features
 
 - Robust routing.
 - Authentication and authorization of the users and their posts.
-- Multiple media management.
+- Multiple media management with S3 Object Store.
 - High performance with paginated requests.
 
 ## Application Structure
