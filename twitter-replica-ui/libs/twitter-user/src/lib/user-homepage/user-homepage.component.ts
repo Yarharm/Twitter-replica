@@ -1,7 +1,13 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { cloneDeep } from 'lodash';
-import { UserModel, UserService, AuthService } from 'libs/twitter-core/src';
+import {
+  UserModel,
+  FollowModel,
+  UserService,
+  AuthService,
+  FanOutService,
+} from 'libs/twitter-core/src';
 import { Subscription } from 'rxjs';
 import {
   MatDialog,
@@ -21,12 +27,15 @@ export class TwitterUserHomepageComponent implements OnInit, OnDestroy {
   usernamePrefix: string;
   authStatus: boolean;
   userId: string;
+  isFollowed: boolean;
   authTokenSubs: Subscription;
   currentUserSubs: Subscription;
+  followingUsersSubs: Subscription;
 
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
+    private readonly fanOutService: FanOutService,
     private readonly route: ActivatedRoute,
     public dialog: MatDialog
   ) {}
@@ -63,6 +72,16 @@ export class TwitterUserHomepageComponent implements OnInit, OnDestroy {
       this.userService.getUser(this.usernamePrefix);
     });
 
+    // Follower
+    this.followingUsersSubs = this.fanOutService
+      .getFollowingUsersListener()
+      .subscribe((users: FollowModel[]) => {
+        this.isFollowed =
+          users.filter((user) => user.usernamePrefix === this.usernamePrefix)
+            .length > 0;
+      });
+    this.fanOutService.getFollowingUsers();
+
     this.form = new FormGroup({
       coverImage: new FormControl(null, {
         validators: [Validators.required],
@@ -75,6 +94,16 @@ export class TwitterUserHomepageComponent implements OnInit, OnDestroy {
         validators: [Validators.required],
       }),
     });
+  }
+
+  onFollowUser() {
+    this.fanOutService.followUser(this.usernamePrefix);
+    this.isFollowed = true;
+  }
+
+  onUnfollowUser() {
+    this.fanOutService.unfollowUser(this.usernamePrefix);
+    this.isFollowed = false;
   }
 
   onSetupProfile() {

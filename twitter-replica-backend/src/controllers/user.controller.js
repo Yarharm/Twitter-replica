@@ -43,8 +43,9 @@ exports.createUser = asyncHandler(async (req, res) => {
       bio: userFacade.defaultUser.bio,
       avatar: `${properties.mediaPath}${userFacade.defaultUser.avatar}`,
       coverImage: `${properties.mediaPath}${userFacade.defaultUser.coverImage}`,
+      following: [],
+      followers: [],
     });
-
     const result = await user.save();
     return res.json(result).send();
   } catch (err) {

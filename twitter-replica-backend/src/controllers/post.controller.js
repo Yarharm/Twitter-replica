@@ -45,7 +45,6 @@ exports.createPost = asyncHandler(async (req, res) => {
     creatorId: req.userData.id,
     creatorUsernamePrefix: req.userData.usernamePrefix,
   });
-  console.log('POST MEDIA PATH ', post.mediaPath);
   try {
     const ret = await post.save();
     res.json(ret).send();

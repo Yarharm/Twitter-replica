@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { UserModel } from '../models';
 import { URL } from './urls';
 import { AuthService } from './auth.service';
-import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
 @Injectable({

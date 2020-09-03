@@ -12,6 +12,18 @@ const userSchema = new mongoose.Schema({
   bio: { type: String },
   avatar: { type: String, require: true },
   coverImage: { type: String, require: true },
+  following: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 userSchema.plugin(uniqueValidator, { message: 'is already taken.' });

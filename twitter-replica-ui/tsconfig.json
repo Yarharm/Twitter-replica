@@ -17,7 +17,8 @@
       "@twitter-replica/core": ["libs/twitter-core/src/index.ts"],
       "@twitter-replica/post": ["libs/twitter-post/src/index.ts"],
       "@twitter-replica/auth": ["libs/twitter-auth/src/index.ts"],
-      "@twitter-replica/user": ["libs/twitter-user/src/index.ts"]
+      "@twitter-replica/user": ["libs/twitter-user/src/index.ts"],
+      "@twitter-replica/friendship": ["libs/twitter-friendship/src/index.ts"]
     }
   },
   "angularCompilerOptions": {

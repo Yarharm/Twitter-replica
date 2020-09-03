@@ -22,4 +22,11 @@ export namespace URL {
   export const CREATE_POST = `/posts`;
   export const DELETE_POST = `/posts/`;
   export const UPDATE_POST = `/posts/`;
+
+  // FanOut
+  export const FRIENDSHIPS = `${API}/friendships`;
+  export const FOLLOW_USER = `${FRIENDSHIPS}/follow`;
+  export const UNFOLLOW_USER = `${FRIENDSHIPS}/unfollow`;
+  export const FOLLOWING_USERS = `${FRIENDSHIPS}/following`;
+  export const FOLLOWER_USERS = `${FRIENDSHIPS}/follower`;
 }

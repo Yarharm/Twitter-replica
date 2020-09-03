@@ -20,6 +20,16 @@
         Set up profile
       </button>
     </div>
+    <div *ngIf="authStatus && userId != currentUser.id && !isFollowed">
+      <button mat-stroked-button color="primary" (click)="onFollowUser()">
+        Follow
+      </button>
+    </div>
+    <div *ngIf="authStatus && userId != currentUser.id && isFollowed">
+      <button mat-stroked-button color="primary" (click)="onUnfollowUser()">
+        Unfollow
+      </button>
+    </div>
     <mat-card-title>{{ currentUser.name }} </mat-card-title>
     <mat-card-subtitle>@{{ currentUser.username }}</mat-card-subtitle>
   </mat-card-header>
