@@ -12,6 +12,22 @@
       >Create Post</a
     ></span
   >
+  <span *ngIf="authStatus"
+    ><a
+      mat-button
+      [routerLink]="['/user', usernamePrefix, 'friendships', 'follower']"
+      routerLinkActive="mat-accent"
+      >Followers</a
+    ></span
+  >
+  <span *ngIf="authStatus"
+    ><a
+      mat-button
+      [routerLink]="['/user', usernamePrefix, 'friendships', 'following']"
+      routerLinkActive="mat-accent"
+      >Following</a
+    ></span
+  >
   <span class="fill-remaining-space"></span>
   <ul>
     <li *ngIf="!authStatus">

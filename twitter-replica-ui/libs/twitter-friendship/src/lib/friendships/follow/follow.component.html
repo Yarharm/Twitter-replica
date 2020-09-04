@@ -1,0 +1,27 @@
+<mat-nav-list *ngIf="!isFollowersRoute">
+  <a
+    mat-list-item
+    *ngFor="let user of followingUsers"
+    [routerLink]="['/user', user.usernamePrefix]"
+  >
+    <img matListAvatar [src]="user.avatar" alt="avatar" />
+    <h3 matLine>{{ user.name }}</h3>
+    <p matLine>
+      <span> {{ user.usernamePrefix }} </span>
+    </p></a
+  >
+</mat-nav-list>
+
+<mat-nav-list *ngIf="isFollowersRoute">
+  <a
+    mat-list-item
+    *ngFor="let user of followers"
+    [routerLink]="['/user', user.usernamePrefix]"
+  >
+    <img matListAvatar [src]="user.avatar" alt="avatar" />
+    <h3 matLine>{{ user.name }}</h3>
+    <p matLine>
+      <span> {{ user.usernamePrefix }} </span>
+    </p></a
+  >
+</mat-nav-list>

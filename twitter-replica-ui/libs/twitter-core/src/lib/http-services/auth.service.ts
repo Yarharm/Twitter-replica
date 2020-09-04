@@ -42,7 +42,6 @@ export class AuthService {
 
   loginUser(username: string, password: string) {
     const loginInfo: LoginModel = this.buildLoginData(username, password);
-
     this.httpClient
       .post<LoginResponseModel>(URL.AUTH_LOGIN, loginInfo)
       .subscribe((loginRes: LoginResponseModel) => {
