@@ -14,14 +14,20 @@ const userSchema = new mongoose.Schema({
   coverImage: { type: String, require: true },
   following: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+      followTime: { type: Number },
     },
   ],
   followers: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+      followTime: { type: Number },
     },
   ],
 });

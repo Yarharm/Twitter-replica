@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const properties = require('../properties');
-
+const cache = require('../cache/cache');
 const User = mongoose.model('User');
 const userFacade = require('../configs/user.config');
 
@@ -21,6 +21,8 @@ exports.loginUser = asyncHandler(async (req, res) => {
     }
 
     const token = await user.generateJWT();
+    await cache.user.setUser(user.usernamePrefix, user);
+
     return res
       .json({ token, userId: user._id, usernamePrefix: user.usernamePrefix })
       .send();
@@ -46,7 +48,9 @@ exports.createUser = asyncHandler(async (req, res) => {
       following: [],
       followers: [],
     });
+
     const result = await user.save();
+
     return res.json(result).send();
   } catch (err) {
     return res.status(500).json({ message: 'User already exists' }).send();
@@ -55,19 +59,24 @@ exports.createUser = asyncHandler(async (req, res) => {
 
 exports.getUser = asyncHandler(async (req, res) => {
   try {
-    const result = await User.findOne({
-      usernamePrefix: req.params.usernamePrefix,
-    });
-    res
-      .json({
-        id: result._id,
-        coverImage: result.coverImage,
-        avatar: result.avatar,
-        bio: result.bio,
-        name: result.name,
-        username: result.username,
-      })
-      .send();
+    let user = await cache.user.getUser(req.params.usernamePrefix);
+    if (!user) {
+      user = await User.findOne({
+        usernamePrefix: req.params.usernamePrefix,
+      });
+      await cache.user.setUser(req.params.usernamePrefix, user);
+    }
+
+    const userData = {
+      id: user._id,
+      coverImage: user.coverImage,
+      avatar: user.avatar,
+      bio: user.bio,
+      name: user.name,
+      username: user.username,
+    };
+
+    res.json(userData).send();
   } catch (err) {
     res
       .json({
@@ -102,13 +111,17 @@ exports.updateUser = asyncHandler(async (req, res) => {
   });
 
   try {
-    const result = await User.updateOne(
+    const result = await User.findOneAndUpdate(
       { _id: req.body.id, usernamePrefix: req.userData.usernamePrefix },
-      user
+      user,
+      { new: true }
     );
+
     if (result.n <= 0) {
       res.status(401).json({ message: 'Not authorized' }).send();
     }
+
+    await cache.user.setUser(req.params.usernamePrefix, result);
     res.send();
   } catch (err) {
     res.status(500).json({ message: 'Could not update user' }).send();
