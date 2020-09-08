@@ -11,6 +11,7 @@ To get the Node server running locally:
 - Create `.env` file with defined:
 - - DATABASE_URL - connection to your mongodb.
 - - AUTH_SECRET_DEV - secret string for authentication.
+- - REDIS_PORT - port for the Redis server.
 - The following `.env` properties are required for the object store.
 - - AWS_ACCESS_KEY_ID
 - - AWS_BUCKET_POLICY
