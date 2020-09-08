@@ -50,3 +50,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+
+# Ignore redis binary dump (dump.rdb) files
+*.rdb

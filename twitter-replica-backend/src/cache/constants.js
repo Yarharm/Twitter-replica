@@ -1,0 +1,5 @@
+const USER_KEY_DELIM = ':';
+const FOLLOW_KEY_DELIM = ':';
+
+exports.USER_KEY_DELIM = USER_KEY_DELIM;
+exports.FOLLOW_KEY_DELIM = FOLLOW_KEY_DELIM;
