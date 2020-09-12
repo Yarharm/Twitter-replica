@@ -80,7 +80,9 @@ export class TwitterUserHomepageComponent implements OnInit, OnDestroy {
           users.filter((user) => user.usernamePrefix === this.usernamePrefix)
             .length > 0;
       });
-    this.fanOutService.getFollowingUsers();
+    if (this.authStatus) {
+      this.fanOutService.getFollowingUsers();
+    }
 
     this.form = new FormGroup({
       coverImage: new FormControl(null, {

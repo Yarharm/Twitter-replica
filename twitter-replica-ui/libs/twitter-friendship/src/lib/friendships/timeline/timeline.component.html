@@ -1,0 +1,15 @@
+<mat-card class="tweet" *ngFor="let tweet of timeline">
+  <mat-card-header>
+    <div mat-card-avatar>
+      <img mat-card-avatar [src]="tweet.avatar" alt="No avatar image" />
+    </div>
+    <mat-card-title>{{ tweet.name }}</mat-card-title>
+    <mat-card-subtitle>@{{ tweet.username }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      {{ tweet.content }}
+    </p>
+  </mat-card-content>
+  <img mat-card-image [src]="tweet.mediaPath" alt="No image available" />
+</mat-card>

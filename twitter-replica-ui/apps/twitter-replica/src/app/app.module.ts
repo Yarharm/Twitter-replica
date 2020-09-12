@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TwitterCoreModule } from '@twitter-replica/core';
 import { TwitterAuthModule } from '@twitter-replica/auth';
 import { TwitterPostModule } from '@twitter-replica/post';
+import { TwitterFriendshipModule } from '@twitter-replica/friendship';
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,6 +19,7 @@ import { TwitterPostModule } from '@twitter-replica/post';
     TwitterCoreModule,
     TwitterAuthModule,
     TwitterPostModule,
+    TwitterFriendshipModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

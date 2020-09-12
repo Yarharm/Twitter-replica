@@ -8,6 +8,7 @@ import {
   TwitterUserHomepageComponent,
   TwitterUserProfileUpdateComponent,
 } from './user-homepage/user-homepage.component';
+import { TwitterFriendshipModule } from '@twitter-replica/friendship';
 import { TwitterPostModule } from '@twitter-replica/post';
 
 export const TwitterUserRoutes: Route[] = [
@@ -22,8 +23,9 @@ export const TwitterUserRoutes: Route[] = [
     CommonModule,
     RouterModule,
     MaterialModule,
-    TwitterPostModule,
     ReactiveFormsModule,
+    TwitterFriendshipModule,
+    TwitterPostModule,
   ],
   declarations: [
     TwitterUserHomepageComponent,

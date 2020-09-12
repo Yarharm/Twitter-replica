@@ -5,4 +5,5 @@ export interface BackendPostModel {
   mediaPath: string;
   creatorId: string;
   creatorUsernamePrefix: string;
+  creationTime: number;
 }

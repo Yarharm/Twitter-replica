@@ -12,6 +12,7 @@ const postSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  creationTime: { type: Number },
 });
 
 mongoose.model('Post', postSchema);

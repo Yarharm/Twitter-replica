@@ -3,6 +3,12 @@ const controllerFacade = require('../../controllers');
 const auth = require('../../middleware/auth');
 
 router.get(
+  '/timeline',
+  auth,
+  controllerFacade.friendshipController.getTimeline
+);
+
+router.get(
   '/following',
   auth,
   controllerFacade.friendshipController.getFollowing
