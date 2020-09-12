@@ -4,6 +4,7 @@ import { RouterModule, Route } from '@angular/router';
 import { MaterialModule } from '../../../material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { TimelineComponent } from './friendships/timeline/timeline.component';
 import { TwitterFollowComponent } from './friendships/follow/follow.component';
 
 export const TwitterFriendshipRoutes: Route[] = [
@@ -19,7 +20,7 @@ export const TwitterFriendshipRoutes: Route[] = [
 
 @NgModule({
   imports: [CommonModule, RouterModule, MaterialModule, ReactiveFormsModule],
-  declarations: [TwitterFollowComponent],
-  exports: [TwitterFollowComponent],
+  declarations: [TwitterFollowComponent, TimelineComponent],
+  exports: [TwitterFollowComponent, TimelineComponent],
 })
 export class TwitterFriendshipModule {}

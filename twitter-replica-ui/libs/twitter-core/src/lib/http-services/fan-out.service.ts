@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ComponentFactoryResolver } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
-import { cloneDeep } from 'lodash';
 import { URL } from './urls';
-import { FollowModel } from '../models';
+import { FollowModel, TweetTimelineModel } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -14,10 +13,19 @@ export class FanOutService {
   // Subjects
   private followingUsersListener = new Subject<FollowModel[]>();
   private followersListener = new Subject<FollowModel[]>();
+  private timelineListener = new Subject<TweetTimelineModel[]>();
+
+  getTimeline() {
+    this.httpClient
+      .get<TweetTimelineModel[]>(`${URL.GET_TIMELINE}`)
+      .subscribe((tweets: TweetTimelineModel[]) => {
+        this.timelineListener.next(tweets);
+      });
+  }
 
   getFollowingUsers() {
     this.httpClient
-      .get<FollowModel[]>(`${URL.FOLLOWING_USERS}`)
+      .get<FollowModel[]>(`${URL.GET_FOLLOWING_USERS}`)
       .subscribe((usersToFollow: FollowModel[]) => {
         this.followingUsersListener.next(usersToFollow);
       });
@@ -25,7 +33,7 @@ export class FanOutService {
 
   getFollowers() {
     this.httpClient
-      .get<FollowModel[]>(`${URL.FOLLOWER_USERS}`)
+      .get<FollowModel[]>(`${URL.GET_FOLLOWER_USERS}`)
       .subscribe((followers: FollowModel[]) => {
         this.followersListener.next(followers);
       });
@@ -53,5 +61,9 @@ export class FanOutService {
 
   getFollowersListener() {
     return this.followersListener.asObservable();
+  }
+
+  getTimelineListener() {
+    return this.timelineListener.asObservable();
   }
 }

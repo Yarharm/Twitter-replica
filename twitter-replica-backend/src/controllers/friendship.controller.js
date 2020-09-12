@@ -2,6 +2,43 @@ const asyncHandler = require('express-async-handler');
 const mongoose = require('mongoose');
 const cache = require('../cache/cache');
 const User = mongoose.model('User');
+const Post = mongoose.model('Post');
+
+exports.getTimeline = asyncHandler(async (req, res) => {
+  try {
+    let timeline = await cache.follow.getTimeline(req.userData.usernamePrefix);
+    if (!timeline) {
+      const user = await User.findOne({
+        usernamePrefix: req.userData.usernamePrefix,
+      });
+      if (user.following && user.following.length > 0) {
+        timeline = await Promise.all(
+          user.following.map(async (userToFollow) => {
+            const currentUser = await User.findById(userToFollow.userId);
+            const currentUserPosts = await Post.find({
+              creatorId: userToFollow.userId,
+            });
+
+            const tweets = await this.buildTweetData(
+              req.userData.usernamePrefix,
+              currentUser,
+              currentUserPosts
+            );
+            return tweets;
+          })
+        );
+      }
+    }
+    timeline = await cache.follow.getTimeline(req.userData.usernamePrefix);
+
+    res.json(timeline).send();
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: 'Could not fetch a timeline' })
+      .send();
+  }
+});
 
 exports.followUser = asyncHandler(async (req, res) => {
   try {
@@ -45,6 +82,7 @@ exports.followUser = asyncHandler(async (req, res) => {
         JSON.stringify(this.buildFollowData(authenticatedUser))
       );
     }
+    await cache.follow.removeTimeline(req.userData.usernamePrefix);
 
     res.send();
   } catch (err) {
@@ -88,6 +126,7 @@ exports.unfollowUser = asyncHandler(async (req, res) => {
       req.body.usernamePrefix,
       JSON.stringify(this.buildFollowData(authenticatedUser))
     );
+    await cache.follow.removeTimeline(req.userData.usernamePrefix);
 
     res.send();
   } catch (err) {
@@ -166,4 +205,25 @@ exports.buildFollowData = (user) => {
     usernamePrefix: user.usernamePrefix,
     avatar: user.avatar,
   };
+};
+
+exports.buildTweetData = async (authUser, user, posts) => {
+  const tweets = await Promise.all(
+    posts.map(async (post) => {
+      const tweet = {
+        name: user.name,
+        username: user.username,
+        avatar: user.avatar,
+        content: post.content,
+        mediaPath: post.mediaPath,
+      };
+      await cache.follow.addTweetToTimeline(
+        authUser,
+        post.creationTime,
+        JSON.stringify(tweet)
+      );
+      return tweet;
+    })
+  );
+  return tweets;
 };

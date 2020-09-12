@@ -41,4 +41,18 @@
     </div>
   </mat-card-content>
 </mat-card>
-<twitter-post-list></twitter-post-list>
+<!-- Feed -->
+<div *ngIf="authStatus && userId == currentUser.id">
+  <mat-tab-group mat-align-tabs="center">
+    <mat-tab label="Timeline">
+      <twitter-timeline></twitter-timeline>
+    </mat-tab>
+    <mat-tab label="My feed">
+      <twitter-post-list></twitter-post-list>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<div *ngIf="!authStatus || userId != currentUser.id">
+  <twitter-post-list></twitter-post-list>
+</div>

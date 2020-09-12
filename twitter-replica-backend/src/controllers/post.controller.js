@@ -39,11 +39,13 @@ exports.getPosts = asyncHandler(async (req, res) => {
 });
 
 exports.createPost = asyncHandler(async (req, res) => {
+  const creationTime = Math.floor(+Date.now() / 1000);
   const post = new Post({
     content: req.body.content,
     mediaPath: req.file.location,
     creatorId: req.userData.id,
     creatorUsernamePrefix: req.userData.usernamePrefix,
+    creationTime: creationTime,
   });
   try {
     const ret = await post.save();

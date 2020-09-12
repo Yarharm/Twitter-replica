@@ -27,6 +27,7 @@ export namespace URL {
   export const FRIENDSHIPS = `${API}/friendships`;
   export const FOLLOW_USER = `${FRIENDSHIPS}/follow`;
   export const UNFOLLOW_USER = `${FRIENDSHIPS}/unfollow`;
-  export const FOLLOWING_USERS = `${FRIENDSHIPS}/following`;
-  export const FOLLOWER_USERS = `${FRIENDSHIPS}/follower`;
+  export const GET_FOLLOWING_USERS = `${FRIENDSHIPS}/following`;
+  export const GET_FOLLOWER_USERS = `${FRIENDSHIPS}/follower`;
+  export const GET_TIMELINE = `${FRIENDSHIPS}/timeline`;
 }
